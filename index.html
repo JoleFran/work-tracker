@@ -325,10 +325,9 @@
 
     setStatus('Loading tasks from your sheet...', 'thinking');
     try {
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url + '?action=read')}`;
+      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url + '?action=read')}`;
       const res = await fetch(proxyUrl);
-      const wrapper = await res.json();
-      const data = JSON.parse(wrapper.contents);
+      const data = await res.json();
       if (!data.tasks) throw new Error('No tasks in response');
       sheetData = data.tasks;
       document.getElementById('taskCount').textContent = sheetData.length + ' tasks loaded';
