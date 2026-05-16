@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Work Tracker</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f3;
+      color: #1a1a1a;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .app {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .header {
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      border: 0.5px solid #e0e0e0;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    .url-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 0.5px solid #d0d0d0;
+      font-family: monospace;
+      background: #fafafa;
+      color: #1a1a1a;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: #999;
+      background: #fff;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 90px;
+      font-size: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 0.5px solid #d0d0d0;
+      resize: vertical;
+      font-family: inherit;
+      background: #fafafa;
+      color: #1a1a1a;
+      outline: none;
+      line-height: 1.5;
+    }
+
+    textarea:focus {
+      border-color: #999;
+      background: #fff;
+    }
+
+    .examples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      font-size: 12px;
+      background: #f0f0ee;
+      color: #555;
+      border: 0.5px solid #e0e0e0;
+      padding: 4px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .chip:hover { background: #e4e4e2; color: #1a1a1a; }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      align-items: center;
+    }
+
+    button {
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 8px 16px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    button:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      font-weight: 500;
+    }
+
+    .btn-primary:disabled { opacity: 0.4; cursor: default; }
+
+    .btn-secondary {
+      background: transparent;
+      color: #555;
+      border: 0.5px solid #ccc;
+    }
+
+    .btn-secondary:hover { background: #f5f5f3; }
+
+    .task-count {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .status {
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .status.thinking { background: #f5f5f3; color: #666; border: 0.5px solid #e0e0e0; display: block; }
+    .status.success  { background: #edfaf3; color: #1a6640; border: 0.5px solid #a8dcc0; display: block; }
+    .status.error    { background: #fef0f0; color: #991a1a; border: 0.5px solid #f0b0b0; display: block; }
+
+    .proposed {
+      display: none;
+      margin-bottom: 1rem;
+    }
+
+    .change-row {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 8px;
+      font-size: 14px;
+      padding: 7px 0;
+      border-bottom: 0.5px solid #f0f0ee;
+    }
+
+    .change-row:last-child { border-bottom: none; }
+    .change-label { color: #888; }
+    .change-value { color: #1a1a1a; font-weight: 500; }
+    .change-value.update { color: #1a5fa6; }
+
+    .confirm-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .btn-confirm {
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .btn-cancel {
+      background: transparent;
+      color: #888;
+      border: 0.5px solid #ccc;
+      font-size: 13px;
+    }
+
+    .history-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 13px;
+      color: #666;
+      padding: 7px 0;
+      border-bottom: 0.5px solid #f0f0ee;
+    }
+
+    .history-item:last-child { border-bottom: none; }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2d9e6b;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .history-task { color: #1a1a1a; }
+    .history-time { color: #aaa; font-size: 12px; }
+
+    .confidence-high   { color: #1a6640; }
+    .confidence-medium { color: #8a5a00; }
+    .confidence-low    { color: #991a1a; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>Work Tracker</h1>
+    <p>Type an update in plain English — Claude will interpret it and write back to your Google Sheet.</p>
+  </div>
+
+  <!-- Config -->
+  <div class="card">
+    <div class="card-label">Apps Script URL</div>
+    <div class="url-row">
+      <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec" />
+      <button class="btn-secondary" onclick="loadSheet()">Load sheet</button>
+      <span class="task-count" id="taskCount"></span>
+    </div>
+  </div>
+
+  <!-- Update input -->
+  <div class="card">
+    <div class="card-label">Natural language update</div>
+    <textarea id="updateInput" placeholder='e.g. "Mark said he'll have the API background context ready by Wednesday"'></textarea>
+    <div class="examples">
+      <span class="chip" onclick="fillExample(this)">Mark says API context ready Wednesday</span>
+      <span class="chip" onclick="fillExample(this)">Completed the PI3 story titles rewrite</span>
+      <span class="chip" onclick="fillExample(this)">Blocked on Bhavana, no ETA yet</span>
+      <span class="chip" onclick="fillExample(this)">Jeffrey responded, priority score due Friday</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" id="interpretBtn" onclick="interpretUpdate()">Interpret update</button>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="status" id="statusBox"></div>
+
+  <!-- Proposed change -->
+  <div class="card proposed" id="proposedChange">
+    <div class="card-label">Proposed change</div>
+    <div id="changeDetails"></div>
+    <div class="confirm-row">
+      <button class="btn-confirm" onclick="applyChange()">Apply to sheet</button>
+      <button class="btn-cancel" onclick="cancelChange()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="card" id="historyCard" style="display:none;">
+    <div class="card-label">Applied this session</div>
+    <div id="historyList"></div>
+  </div>
+</div>
+
+<script>
+  let sheetData = [];
+  let pendingChange = null;
+  let sessionHistory = [];
+
+  const exampleMap = {
+    "Mark says API context ready Wednesday": "Mark said he'll have the API background context ready for me by Wednesday",
+    "Completed the PI3 story titles rewrite": "I finished rewriting the PI3 story titles and acceptance criteria",
+    "Blocked on Bhavana, no ETA yet": "Still waiting on Bhavana for the updated API document, no ETA given yet",
+    "Jeffrey responded, priority score due Friday": "Jeffrey responded about the priority score story, he needs it by Friday"
+  };
+
+  function fillExample(el) {
+    document.getElementById('updateInput').value = exampleMap[el.textContent.trim()] || el.textContent;
+  }
+
+  function setStatus(msg, type) {
+    const box = document.getElementById('statusBox');
+    box.className = 'status ' + type;
+    box.textContent = msg;
+  }
+
+  function hideStatus() {
+    document.getElementById('statusBox').style.display = 'none';
+    document.getElementById('statusBox').className = 'status';
+  }
+
+  function getUrl() {
+    return document.getElementById('scriptUrl').value.trim();
+  }
+
+  async function loadSheet() {
+    const url = getUrl();
+    if (!url) { setStatus('Paste your Apps Script URL first.', 'error'); return; }
+
+    setStatus('Loading tasks from your sheet...', 'thinking');
+    try {
+      const res = await fetch(url + '?action=read');
+      const data = await res.json();
+      if (!data.tasks) throw new Error('No tasks in response');
+      sheetData = data.tasks;
+      document.getElementById('taskCount').textContent = sheetData.length + ' tasks loaded';
+      setStatus('Sheet loaded — ' + sheetData.length + ' tasks found.', 'success');
+      setTimeout(hideStatus, 3000);
+    } catch(e) {
+      setStatus('Could not load sheet. Check your Apps Script URL and deployment settings. Error: ' + e.message, 'error');
+    }
+  }
+
+  async function interpretUpdate() {
+    const update = document.getElementById('updateInput').value.trim();
+    if (!update) { setStatus('Type an update first.', 'error'); return; }
+
+    const btn = document.getElementById('interpretBtn');
+    btn.disabled = true;
+    document.getElementById('proposedChange').style.display = 'none';
+    setStatus('Interpreting your update...', 'thinking');
+
+    const taskContext = sheetData.length > 0
+      ? 'Current tasks:\n' + JSON.stringify(sheetData.map(t => ({ Task: t.Task, Status: t.Status, Dependency: t.Dependency, Due: t.Due })), null, 2)
+      : 'No sheet loaded — make your best guess at which task this refers to.';
+
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          messages: [{
+            role: "user",
+            content: `You are a work tracker assistant. Interpret this natural language update and map it to a task update.
+
+${taskContext}
+
+User update: "${update}"
+
+Today's date: ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+
+Determine which task this refers to and what fields to update.
+Valid Status values: Open, In Progress, Blocked, Complete
+Valid Priority values: High, Med, Low
+
+Respond ONLY with this JSON (no markdown, no extra text):
+{
+  "taskMatch": "exact or closest task name from the list",
+  "fieldsToUpdate": {
+    "Status": "new value or null",
+    "Dependency": "new value or null",
+    "Due": "date string or null",
+    "Completed Date": "today's date if marking complete, else null",
+    "Priority": "new value or null"
+  },
+  "summary": "one sentence describing what will change",
+  "confidence": "high | medium | low"
+}`
+          }]
+        })
+      });
+
+      const data = await response.json();
+      const text = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
+      const clean = text.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(clean);
+
+      pendingChange = parsed;
+      renderProposedChange(parsed);
+      hideStatus();
+    } catch(e) {
+      setStatus('Could not interpret update. Try rephrasing. Error: ' + e.message, 'error');
+    }
+
+    btn.disabled = false;
+  }
+
+  function renderProposedChange(change) {
+    const details = document.getElementById('changeDetails');
+    const updates = Object.entries(change.fieldsToUpdate).filter(([k, v]) => v !== null);
+
+    let html = `<div class="change-row"><span class="change-label">Task</span><span class="change-value">${change.taskMatch}</span></div>`;
+    updates.forEach(([key, val]) => {
+      html += `<div class="change-row"><span class="change-label">${key}</span><span class="change-value update">${val}</span></div>`;
+    });
+    html += `<div class="change-row"><span class="change-label">Summary</span><span class="change-value" style="font-weight:400;font-style:italic;">${change.summary}</span></div>`;
+    html += `<div class="change-row"><span class="change-label">Confidence</span><span class="change-value confidence-${change.confidence}">${change.confidence}</span></div>`;
+
+    details.innerHTML = html;
+    document.getElementById('proposedChange').style.display = 'block';
+  }
+
+  async function applyChange() {
+    if (!pendingChange) return;
+    const url = getUrl();
+    if (!url) { setStatus('Apps Script URL required.', 'error'); return; }
+
+    setStatus('Writing to your sheet...', 'thinking');
+    document.getElementById('proposedChange').style.display = 'none';
+
+    const updates = {};
+    Object.entries(pendingChange.fieldsToUpdate).forEach(([k, v]) => { if (v !== null) updates[k] = v; });
+
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'update', task: pendingChange.taskMatch, updates })
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Update failed');
+
+      sessionHistory.unshift({
+        task: pendingChange.taskMatch,
+        summary: pendingChange.summary,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+      renderHistory();
+      setStatus('Updated: "' + (data.task || pendingChange.taskMatch) + '"', 'success');
+      document.getElementById('updateInput').value = '';
+      pendingChange = null;
+    } catch(e) {
+      setStatus('Could not write to sheet. Error: ' + e.message, 'error');
+    }
+  }
+
+  function cancelChange() {
+    pendingChange = null;
+    document.getElementById('proposedChange').style.display = 'none';
+  }
+
+  function renderHistory() {
+    document.getElementById('historyCard').style.display = 'block';
+    document.getElementById('historyList').innerHTML = sessionHistory.map(h =>
+      `<div class="history-item">
+        <div class="dot"></div>
+        <div>
+          <span class="history-task">${h.task}</span> — ${h.summary}
+          <span class="history-time"> ${h.time}</span>
+        </div>
+      </div>`
+    ).join('');
+  }
+</script>
+</body>
+</html>
