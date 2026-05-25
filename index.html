@@ -4,437 +4,778 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Work Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f0f;
+      --surface: #181818;
+      --surface2: #222222;
+      --border: #2e2e2e;
+      --accent: #c8f060;
+      --accent-dim: #a0c040;
+      --text: #f0f0f0;
+      --text-muted: #888;
+      --text-dim: #555;
+      --red: #ff5f5f;
+      --yellow: #f0c060;
+      --blue: #60b8f0;
+      --radius: 6px;
+      --mono: 'DM Mono', monospace;
+      --sans: 'Syne', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f5f3;
-      color: #1a1a1a;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
       min-height: 100vh;
-      padding: 2rem 1rem;
+      padding: 0;
     }
 
-    .app {
-      max-width: 680px;
-      margin: 0 auto;
-    }
-
-    .header {
-      margin-bottom: 2rem;
-    }
-
-    .header h1 {
-      font-size: 22px;
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
-
-    .header p {
-      font-size: 14px;
-      color: #666;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      border: 0.5px solid #e0e0e0;
-      padding: 1.25rem;
-      margin-bottom: 1rem;
-    }
-
-    .card-label {
-      font-size: 11px;
-      font-weight: 500;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 10px;
-    }
-
-    .url-row {
+    /* ── Header ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
       display: flex;
-      gap: 8px;
       align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
     }
 
-    input[type="text"] {
-      flex: 1;
-      font-size: 13px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 0.5px solid #d0d0d0;
-      font-family: monospace;
-      background: #fafafa;
-      color: #1a1a1a;
-      outline: none;
+    .logo {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
     }
 
-    input[type="text"]:focus {
-      border-color: #999;
-      background: #fff;
+    .logo span { color: var(--accent); }
+
+    .date-badge {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      min-height: calc(100vh - 61px);
+    }
+
+    /* ── Left Panel ── */
+    .left-panel {
+      border-right: 1px solid var(--border);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 4px;
     }
 
     textarea {
       width: 100%;
-      min-height: 90px;
-      font-size: 15px;
-      padding: 12px;
-      border-radius: 8px;
-      border: 0.5px solid #d0d0d0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      padding: 14px;
       resize: vertical;
-      font-family: inherit;
-      background: #fafafa;
-      color: #1a1a1a;
+      min-height: 160px;
+      transition: border-color 0.2s;
       outline: none;
-      line-height: 1.5;
     }
 
-    textarea:focus {
-      border-color: #999;
-      background: #fff;
-    }
+    textarea::placeholder { color: var(--text-dim); }
+    textarea:focus { border-color: var(--accent); }
 
-    .examples {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 10px;
-    }
-
-    .chip {
-      font-size: 12px;
-      background: #f0f0ee;
-      color: #555;
-      border: 0.5px solid #e0e0e0;
-      padding: 4px 10px;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-
-    .chip:hover { background: #e4e4e2; color: #1a1a1a; }
-
-    .btn-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
+    .btn {
+      display: inline-flex;
       align-items: center;
-    }
-
-    button {
-      font-family: inherit;
-      font-size: 14px;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
-      border-radius: 8px;
-      padding: 8px 16px;
-      transition: opacity 0.15s, transform 0.1s;
+      border: none;
+      transition: all 0.15s;
+      letter-spacing: 0.2px;
     }
-
-    button:active { transform: scale(0.98); }
 
     .btn-primary {
-      background: #1a1a1a;
-      color: #fff;
-      border: none;
-      font-weight: 500;
+      background: var(--accent);
+      color: #0f0f0f;
+      width: 100%;
+      justify-content: center;
     }
 
-    .btn-primary:disabled { opacity: 0.4; cursor: default; }
+    .btn-primary:hover { background: var(--accent-dim); }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .btn-secondary {
+    .btn-ghost {
       background: transparent;
-      color: #555;
-      border: 0.5px solid #ccc;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
     }
 
-    .btn-secondary:hover { background: #f5f5f3; }
+    .btn-ghost:hover { border-color: var(--text-muted); color: var(--text); }
 
-    .task-count {
+    .btn-danger {
+      background: transparent;
+      color: var(--red);
+      border: 1px solid #3a2020;
       font-size: 12px;
-      color: #999;
+      padding: 6px 12px;
     }
 
-    .status {
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-size: 14px;
-      margin-bottom: 1rem;
-      display: none;
-    }
+    .btn-danger:hover { background: #2a1515; }
 
-    .status.thinking { background: #f5f5f3; color: #666; border: 0.5px solid #e0e0e0; display: block; }
-    .status.success  { background: #edfaf3; color: #1a6640; border: 0.5px solid #a8dcc0; display: block; }
-    .status.error    { background: #fef0f0; color: #991a1a; border: 0.5px solid #f0b0b0; display: block; }
-
-    .proposed {
-      display: none;
-      margin-bottom: 1rem;
-    }
-
-    .change-row {
-      display: grid;
-      grid-template-columns: 130px 1fr;
-      gap: 8px;
-      font-size: 14px;
-      padding: 7px 0;
-      border-bottom: 0.5px solid #f0f0ee;
-    }
-
-    .change-row:last-child { border-bottom: none; }
-    .change-label { color: #888; }
-    .change-value { color: #1a1a1a; font-weight: 500; }
-    .change-value.update { color: #1a5fa6; }
-
-    .confirm-row {
+    /* ── Status indicator ── */
+    .status-bar {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      min-height: 40px;
       display: flex;
+      align-items: center;
       gap: 8px;
-      margin-top: 14px;
     }
-
-    .btn-confirm {
-      background: #1a1a1a;
-      color: #fff;
-      border: none;
-      font-weight: 500;
-      font-size: 13px;
-    }
-
-    .btn-cancel {
-      background: transparent;
-      color: #888;
-      border: 0.5px solid #ccc;
-      font-size: 13px;
-    }
-
-    .history-item {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      font-size: 13px;
-      color: #666;
-      padding: 7px 0;
-      border-bottom: 0.5px solid #f0f0ee;
-    }
-
-    .history-item:last-child { border-bottom: none; }
 
     .dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #2d9e6b;
-      margin-top: 5px;
+      background: var(--text-dim);
       flex-shrink: 0;
     }
 
-    .history-task { color: #1a1a1a; }
-    .history-time { color: #aaa; font-size: 12px; }
+    .dot.active { background: var(--accent); animation: pulse 1.2s infinite; }
+    .dot.error { background: var(--red); }
+    .dot.success { background: var(--accent); }
 
-    .confidence-high   { color: #1a6640; }
-    .confidence-medium { color: #8a5a00; }
-    .confidence-low    { color: #991a1a; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ── Right Panel ── */
+    .right-panel {
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .right-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .task-count {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* ── Preview Table ── */
+    .preview-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .preview-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .preview-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead tr {
+      background: var(--surface2);
+    }
+
+    th {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    tr.new-row td:first-child {
+      border-left: 2px solid var(--accent);
+    }
+
+    tr.update-row td:first-child {
+      border-left: 2px solid var(--yellow);
+    }
+
+    td input[type="text"], td input[type="date"] {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      width: 100%;
+      outline: none;
+      padding: 2px 0;
+    }
+
+    td input[type="text"]:focus,
+    td input[type="date"]:focus {
+      border-bottom: 1px solid var(--accent);
+    }
+
+    td input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.6);
+      cursor: pointer;
+    }
+
+    td select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      border-radius: 4px;
+      padding: 3px 6px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    td select:focus { border-color: var(--accent); }
+
+    /* ── Status chips ── */
+    .chip {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .chip-open { background: #1a2a1a; color: #80d080; border: 1px solid #2a4a2a; }
+    .chip-inprogress { background: #1a2030; color: var(--blue); border: 1px solid #2a3a50; }
+    .chip-blocked { background: #2a2010; color: var(--yellow); border: 1px solid #4a3a10; }
+    .chip-complete { background: #1a1a2a; color: #a0a0f0; border: 1px solid #2a2a4a; }
+    .chip-cancelled { background: #2a1a1a; color: var(--red); border: 1px solid #4a2a2a; }
+
+    /* ── Sheet view ── */
+    .sheet-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .sheet-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sheet-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .empty-state {
+      padding: 48px;
+      text-align: center;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text);
+      z-index: 999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-width: 320px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success { border-left: 3px solid var(--accent); }
+    .toast.error { border-left: 3px solid var(--red); }
+
+    /* ── Scrollable table wrapper ── */
+    .table-scroll { overflow-x: auto; }
+
+    /* ── Row tag ── */
+    .row-tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 1px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    .tag-new { background: #1e2e10; color: var(--accent); }
+    .tag-update { background: #2e2800; color: var(--yellow); }
+
+    .delete-row-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      padding: 2px 4px;
+      border-radius: 3px;
+      transition: color 0.15s;
+    }
+
+    .delete-row-btn:hover { color: var(--red); }
   </style>
 </head>
 <body>
-<div class="app">
-  <div class="header">
-    <h1>Work Tracker</h1>
-    <p>Type an update in plain English — Claude will interpret it and write back to your Google Sheet.</p>
+
+<header>
+  <div class="logo">work<span>.</span>tracker</div>
+  <div class="date-badge" id="dateBadge"></div>
+</header>
+
+<div class="layout">
+
+  <!-- LEFT: Input Panel -->
+  <div class="left-panel">
+    <div>
+      <div class="panel-label">New Note</div>
+      <textarea id="noteInput" placeholder="Type your notes here...&#10;&#10;e.g. Ping Jeffrey on priority score story. Waiting on Bhavana to send API doc by Thursday. NSS/CDS meeting — write summary."></textarea>
+    </div>
+
+    <button class="btn btn-primary" id="interpretBtn" onclick="interpretNote()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      Interpret Note
+    </button>
+
+    <div class="status-bar" id="statusBar">
+      <div class="dot" id="statusDot"></div>
+      <span id="statusText">Ready</span>
+    </div>
+
+    <div>
+      <div class="panel-label" style="margin-bottom:10px;">Quick Filters</div>
+      <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" onclick="setFilter('all')">All</button>
+        <button class="filter-btn" onclick="setFilter('Open')">Open</button>
+        <button class="filter-btn" onclick="setFilter('In Progress')">In Progress</button>
+        <button class="filter-btn" onclick="setFilter('Blocked')">Blocked</button>
+        <button class="filter-btn" onclick="setFilter('Complete')">Complete</button>
+        <button class="filter-btn" onclick="setFilter('Cancelled')">Cancelled</button>
+      </div>
+    </div>
+
+    <button class="btn btn-ghost" onclick="loadSheet()" style="margin-top:auto;">
+      ↻ Refresh Sheet
+    </button>
   </div>
 
-  <!-- Config -->
-  <div class="card">
-    <div class="card-label">Apps Script URL</div>
-    <div class="url-row">
-      <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec" />
-      <button class="btn-secondary" onclick="loadSheet()">Load sheet</button>
-      <span class="task-count" id="taskCount"></span>
-    </div>
-  </div>
+  <!-- RIGHT: Main Panel -->
+  <div class="right-panel">
 
-  <!-- Update input -->
-  <div class="card">
-    <div class="card-label">Natural language update</div>
-    <textarea id="updateInput" placeholder='e.g. "Mark said he'll have the API background context ready by Wednesday"'></textarea>
-    <div class="examples">
-      <span class="chip" onclick="fillExample(this)">Mark says API context ready Wednesday</span>
-      <span class="chip" onclick="fillExample(this)">Completed the PI3 story titles rewrite</span>
-      <span class="chip" onclick="fillExample(this)">Blocked on Bhavana, no ETA yet</span>
-      <span class="chip" onclick="fillExample(this)">Jeffrey responded, priority score due Friday</span>
+    <!-- Preview Section (hidden until interpret runs) -->
+    <div class="preview-section" id="previewSection" style="display:none;">
+      <div class="preview-header">
+        <div class="preview-label">⚡ Review Before Writing</div>
+        <div class="preview-actions">
+          <button class="btn btn-danger" onclick="clearPreview()">Discard</button>
+          <button class="btn btn-primary" id="writeBtn" onclick="writeToSheet()" style="width:auto;">
+            Write to Sheet ↗
+          </button>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table id="previewTable">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Task</th>
+              <th>Owner</th>
+              <th>Due</th>
+              <th>Project</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Dependency</th>
+              <th>Source</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="previewBody"></tbody>
+        </table>
+      </div>
     </div>
-    <div class="btn-row">
-      <button class="btn-primary" id="interpretBtn" onclick="interpretUpdate()">Interpret update</button>
+
+    <!-- Sheet View -->
+    <div class="sheet-section">
+      <div class="sheet-header">
+        <div class="sheet-label">Current Tasks</div>
+        <div class="task-count" id="taskCount">— tasks</div>
+      </div>
+      <div class="table-scroll">
+        <table id="sheetTable">
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Owner</th>
+              <th>Due</th>
+              <th>Project</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Dependency</th>
+            </tr>
+          </thead>
+          <tbody id="sheetBody">
+            <tr><td colspan="7" class="empty-state">Loading tasks...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
 
-  <!-- Status -->
-  <div class="status" id="statusBox"></div>
-
-  <!-- Proposed change -->
-  <div class="card proposed" id="proposedChange">
-    <div class="card-label">Proposed change</div>
-    <div id="changeDetails"></div>
-    <div class="confirm-row">
-      <button class="btn-confirm" onclick="applyChange()">Apply to sheet</button>
-      <button class="btn-cancel" onclick="cancelChange()">Cancel</button>
-    </div>
-  </div>
-
-  <!-- History -->
-  <div class="card" id="historyCard" style="display:none;">
-    <div class="card-label">Applied this session</div>
-    <div id="historyList"></div>
   </div>
 </div>
 
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
 <script>
-  let sheetData = [];
-  let pendingChange = null;
-  let sessionHistory = [];
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJeBz9rwvQZuwlOCURyMk5Hhs0iL7GVle2bpY2NboVutJ2y9rqTc39aWpyOXo2uj2ssQ/exec";
+  const PROXY = "https://corsproxy.io/?url=";
 
-  const exampleMap = {
-    "Mark says API context ready Wednesday": "Mark said he'll have the API background context ready for me by Wednesday",
-    "Completed the PI3 story titles rewrite": "I finished rewriting the PI3 story titles and acceptance criteria",
-    "Blocked on Bhavana, no ETA yet": "Still waiting on Bhavana for the updated API document, no ETA given yet",
-    "Jeffrey responded, priority score due Friday": "Jeffrey responded about the priority score story, he needs it by Friday"
-  };
+  let currentFilter = "all";
+  let allTasks = [];
+  let pendingTasks = [];
 
-  function fillExample(el) {
-    document.getElementById('updateInput').value = exampleMap[el.textContent.trim()] || el.textContent;
+  // ── Date badge ──
+  const now = new Date();
+  const TODAY = now.toISOString().split("T")[0];
+  document.getElementById("dateBadge").textContent = now.toLocaleDateString("en-US", {
+    weekday: "short", month: "short", day: "numeric", year: "numeric"
+  });
+
+  // ── Status bar ──
+  function setStatus(msg, state = "idle") {
+    document.getElementById("statusText").textContent = msg;
+    const dot = document.getElementById("statusDot");
+    dot.className = "dot";
+    if (state === "loading") dot.classList.add("active");
+    if (state === "error") dot.classList.add("error");
+    if (state === "success") dot.classList.add("success");
   }
 
-  function setStatus(msg, type) {
-    const box = document.getElementById('statusBox');
-    box.className = 'status ' + type;
-    box.textContent = msg;
+  // ── Toast ──
+  function showToast(msg, type = "success") {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.className = "toast", 3000);
   }
 
-  function hideStatus() {
-    document.getElementById('statusBox').style.display = 'none';
-    document.getElementById('statusBox').className = 'status';
-  }
-
-  function getUrl() {
-    return document.getElementById('scriptUrl').value.trim();
-  }
-
+  // ── Load sheet ──
   async function loadSheet() {
-    const url = getUrl();
-    if (!url) { setStatus('Paste your Apps Script URL first.', 'error'); return; }
-
-    setStatus('Loading tasks from your sheet...', 'thinking');
+    setStatus("Loading tasks...", "loading");
     try {
-      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url + '?action=read')}`;
-      const res = await fetch(proxyUrl);
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "read" })
+      });
       const data = await res.json();
-      if (!data.tasks) throw new Error('No tasks in response');
-      sheetData = data.tasks;
-      document.getElementById('taskCount').textContent = sheetData.length + ' tasks loaded';
-      setStatus('Sheet loaded — ' + sheetData.length + ' tasks found.', 'success');
-      setTimeout(hideStatus, 3000);
-    } catch(e) {
-      setStatus('Could not load sheet. Check your Apps Script URL and deployment settings. Error: ' + e.message, 'error');
+      allTasks = data.tasks || [];
+      renderSheet();
+      setStatus(`Loaded ${allTasks.length} tasks`, "success");
+    } catch (err) {
+      setStatus("Failed to load sheet", "error");
+      showToast("Could not connect to sheet", "error");
     }
   }
 
-  async function interpretUpdate() {
-    const update = document.getElementById('updateInput').value.trim();
-    if (!update) { setStatus('Type an update first.', 'error'); return; }
+  // ── Render sheet ──
+  function renderSheet() {
+    const body = document.getElementById("sheetBody");
+    const filtered = currentFilter === "all"
+      ? allTasks
+      : allTasks.filter(t => t.Status === currentFilter);
 
-    const url = getUrl();
-    if (!url) { setStatus('Paste your Apps Script URL first.', 'error'); return; }
+    document.getElementById("taskCount").textContent = `${filtered.length} task${filtered.length !== 1 ? "s" : ""}`;
 
-    const btn = document.getElementById('interpretBtn');
+    if (filtered.length === 0) {
+      body.innerHTML = `<tr><td colspan="7" class="empty-state">No tasks found.</td></tr>`;
+      return;
+    }
+
+    body.innerHTML = filtered.map(t => {
+      const due = t.Due ? t.Due : "—";
+      const isOverdue = t.Due && t.Due < TODAY && t.Status !== "Complete" && t.Status !== "Cancelled";
+      const rowStyle = isOverdue ? "background:#1f1010;" : "";
+      return `<tr style="${rowStyle}">
+        <td style="max-width:260px;">${t.Task || "—"}</td>
+        <td>${t.Owner || "—"}</td>
+        <td style="font-family:var(--mono);font-size:12px;color:${isOverdue ? 'var(--red)' : 'inherit'}">${due}</td>
+        <td>${t.Project || "—"}</td>
+        <td>${statusChip(t.Status)}</td>
+        <td style="font-family:var(--mono);font-size:12px;">${t.Priority || "—"}</td>
+        <td style="color:var(--text-muted);font-size:12px;">${t.Dependency || "—"}</td>
+      </tr>`;
+    }).join("");
+  }
+
+  function statusChip(status) {
+    const map = {
+      "Open": "chip-open",
+      "In Progress": "chip-inprogress",
+      "Blocked": "chip-blocked",
+      "Complete": "chip-complete",
+      "Cancelled": "chip-cancelled"
+    };
+    return `<span class="chip ${map[status] || ''}">${status || "—"}</span>`;
+  }
+
+  // ── Filter ──
+  function setFilter(val) {
+    currentFilter = val;
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    event.target.classList.add("active");
+    renderSheet();
+  }
+
+  // ── Interpret ──
+  async function interpretNote() {
+    const note = document.getElementById("noteInput").value.trim();
+    if (!note) return showToast("Please enter a note first", "error");
+
+    const btn = document.getElementById("interpretBtn");
     btn.disabled = true;
-    document.getElementById('proposedChange').style.display = 'none';
-    setStatus('Interpreting your update...', 'thinking');
+    setStatus("Interpreting note...", "loading");
 
     try {
-      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-      const res = await fetch(proxyUrl, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'interpret', update: update, tasks: sheetData })
-      });
-      const parsed = await res.json();
-      if (parsed.error) throw new Error(parsed.error);
-
-      pendingChange = parsed;
-      renderProposedChange(parsed);
-      hideStatus();
-    } catch(e) {
-      setStatus('Could not interpret update. Try rephrasing. Error: ' + e.message, 'error');
-    }
-
-    btn.disabled = false;
-  }
-
-  function renderProposedChange(change) {
-    const details = document.getElementById('changeDetails');
-    const updates = Object.entries(change.fieldsToUpdate).filter(([k, v]) => v !== null);
-
-    let html = `<div class="change-row"><span class="change-label">Task</span><span class="change-value">${change.taskMatch}</span></div>`;
-    updates.forEach(([key, val]) => {
-      html += `<div class="change-row"><span class="change-label">${key}</span><span class="change-value update">${val}</span></div>`;
-    });
-    html += `<div class="change-row"><span class="change-label">Summary</span><span class="change-value" style="font-weight:400;font-style:italic;">${change.summary}</span></div>`;
-    html += `<div class="change-row"><span class="change-label">Confidence</span><span class="change-value confidence-${change.confidence}">${change.confidence}</span></div>`;
-
-    details.innerHTML = html;
-    document.getElementById('proposedChange').style.display = 'block';
-  }
-
-  async function applyChange() {
-    if (!pendingChange) return;
-    const url = getUrl();
-    if (!url) { setStatus('Apps Script URL required.', 'error'); return; }
-
-    setStatus('Writing to your sheet...', 'thinking');
-    document.getElementById('proposedChange').style.display = 'none';
-
-    const updates = {};
-    Object.entries(pendingChange.fieldsToUpdate).forEach(([k, v]) => { if (v !== null) updates[k] = v; });
-
-    try {
-      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-      const res = await fetch(proxyUrl, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'update', task: pendingChange.taskMatch, updates })
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "interpret", note, today: TODAY })
       });
       const data = await res.json();
-      if (!data.success) throw new Error(data.error || 'Update failed');
-
-      sessionHistory.unshift({
-        task: pendingChange.taskMatch,
-        summary: pendingChange.summary,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      });
-      renderHistory();
-      setStatus('Updated: "' + (data.task || pendingChange.taskMatch) + '"', 'success');
-      document.getElementById('updateInput').value = '';
-      pendingChange = null;
-    } catch(e) {
-      setStatus('Could not write to sheet. Error: ' + e.message, 'error');
+      if (data.error) throw new Error(data.error);
+      pendingTasks = data.tasks || [];
+      renderPreview(pendingTasks);
+      setStatus(`Found ${pendingTasks.length} task${pendingTasks.length !== 1 ? "s" : ""} — review below`, "success");
+    } catch (err) {
+      setStatus("Interpretation failed", "error");
+      showToast("Error: " + err.message, "error");
+    } finally {
+      btn.disabled = false;
     }
   }
 
-  function cancelChange() {
-    pendingChange = null;
-    document.getElementById('proposedChange').style.display = 'none';
+  // ── Render preview ──
+  function renderPreview(tasks) {
+    const section = document.getElementById("previewSection");
+    const body = document.getElementById("previewBody");
+    section.style.display = "block";
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    body.innerHTML = tasks.map((t, i) => {
+      const tag = t.isUpdate
+        ? `<span class="row-tag tag-update">update</span>`
+        : `<span class="row-tag tag-new">new</span>`;
+
+      return `<tr class="${t.isUpdate ? 'update-row' : 'new-row'}" id="preview-row-${i}">
+        <td>${tag}</td>
+        <td><input type="text" value="${esc(t.Task)}" onchange="updatePending(${i}, 'Task', this.value)" style="min-width:200px;" /></td>
+        <td><input type="text" value="${esc(t.Owner)}" onchange="updatePending(${i}, 'Owner', this.value)" style="min-width:100px;" /></td>
+        <td><input type="date" value="${esc(t.Due)}" onchange="updatePending(${i}, 'Due', this.value)" /></td>
+        <td><input type="text" value="${esc(t.Project)}" onchange="updatePending(${i}, 'Project', this.value)" style="min-width:80px;" /></td>
+        <td>
+          <select onchange="updatePending(${i}, 'Status', this.value)">
+            ${["Open","In Progress","Blocked","Complete","Cancelled"].map(s =>
+              `<option value="${s}" ${t.Status === s ? "selected" : ""}>${s}</option>`
+            ).join("")}
+          </select>
+        </td>
+        <td>
+          <select onchange="updatePending(${i}, 'Priority', this.value)">
+            ${["High","Med","Low"].map(p =>
+              `<option value="${p}" ${(t.Priority || "Med") === p ? "selected" : ""}>${p}</option>`
+            ).join("")}
+          </select>
+        </td>
+        <td><input type="text" value="${esc(t.Dependency)}" onchange="updatePending(${i}, 'Dependency', this.value)" style="min-width:140px;" /></td>
+        <td><input type="text" value="${esc(t.Source)}" onchange="updatePending(${i}, 'Source', this.value)" style="min-width:100px;" /></td>
+        <td><button class="delete-row-btn" onclick="removePreviewRow(${i})" title="Remove">×</button></td>
+      </tr>`;
+    }).join("");
   }
 
-  function renderHistory() {
-    document.getElementById('historyCard').style.display = 'block';
-    document.getElementById('historyList').innerHTML = sessionHistory.map(h =>
-      `<div class="history-item">
-        <div class="dot"></div>
-        <div>
-          <span class="history-task">${h.task}</span> — ${h.summary}
-          <span class="history-time"> ${h.time}</span>
-        </div>
-      </div>`
-    ).join('');
+  function esc(val) {
+    return (val || "").toString().replace(/"/g, "&quot;").replace(/</g, "&lt;");
   }
+
+  function updatePending(i, field, value) {
+    pendingTasks[i][field] = value;
+  }
+
+  function removePreviewRow(i) {
+    pendingTasks.splice(i, 1);
+    if (pendingTasks.length === 0) {
+      clearPreview();
+    } else {
+      renderPreview(pendingTasks);
+    }
+  }
+
+  function clearPreview() {
+    document.getElementById("previewSection").style.display = "none";
+    pendingTasks = [];
+  }
+
+  // ── Write to sheet ──
+  async function writeToSheet() {
+    if (pendingTasks.length === 0) return;
+    const btn = document.getElementById("writeBtn");
+    btn.disabled = true;
+    setStatus("Writing to sheet...", "loading");
+
+    try {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "write", tasks: pendingTasks })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      showToast(`${pendingTasks.length} task${pendingTasks.length !== 1 ? "s" : ""} written to sheet ✓`);
+      clearPreview();
+      document.getElementById("noteInput").value = "";
+      setStatus("Done — sheet updated", "success");
+      await loadSheet();
+    } catch (err) {
+      setStatus("Write failed", "error");
+      showToast("Error: " + err.message, "error");
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  // ── Init ──
+  loadSheet();
 </script>
 </body>
 </html>
