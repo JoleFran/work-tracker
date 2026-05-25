@@ -33,6 +33,30 @@
       --serif: 'Fraunces', serif;
     }
 
+    body.dark {
+      --bg: #1a1a1a;
+      --surface: #242424;
+      --surface2: #2e2e2e;
+      --border: #3a3a3a;
+      --border-strong: #4a4a4a;
+      --accent: #3d9d7c;
+      --accent-hover: #4db38e;
+      --accent-light: #1e3a32;
+      --text: #e8e8e8;
+      --text-muted: #a0a0a0;
+      --text-dim: #6a6a6a;
+      --red: #e57373;
+      --red-bg: #3d2a2a;
+      --yellow: #daa520;
+      --yellow-bg: #3d3520;
+      --blue: #60a5fa;
+      --blue-bg: #1e3a5f;
+      --green: #4ade80;
+      --green-bg: #1e3d2e;
+      --purple: #a78bfa;
+      --purple-bg: #2e2a3d;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -42,8 +66,10 @@
       min-height: 100vh;
       padding: 0;
       line-height: 1.5;
+      transition: background 0.3s, color 0.3s;
     }
 
+    /* ── Header ── */
     header {
       border-bottom: 1px solid var(--border);
       padding: 20px 40px;
@@ -54,9 +80,28 @@
       top: 0;
       background: var(--bg);
       z-index: 100;
+      transition: background 0.3s, border-color 0.3s;
     }
 
-    .logo { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+
     .logo span { color: var(--accent); }
 
     .date-badge {
@@ -67,14 +112,49 @@
       border: 1px solid var(--border);
       padding: 6px 14px;
       border-radius: 20px;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
 
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--surface2);
+      border-color: var(--border-strong);
+    }
+
+    .theme-toggle svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      transition: color 0.3s;
+    }
+
+    .theme-toggle:hover svg { color: var(--text); }
+
+    .sun-icon { display: none; }
+    .moon-icon { display: block; }
+    body.dark .sun-icon { display: block; }
+    body.dark .moon-icon { display: none; }
+
+    /* ── Layout ── */
     .layout {
       display: grid;
       grid-template-columns: 440px 1fr;
       min-height: calc(100vh - 65px);
     }
 
+    /* ── Left Panel ── */
     .left-panel {
       border-right: 1px solid var(--border);
       padding: 32px 28px;
@@ -82,9 +162,14 @@
       flex-direction: column;
       gap: 28px;
       background: var(--surface);
+      transition: background 0.3s, border-color 0.3s;
     }
 
-    .input-section { flex: 1; display: flex; flex-direction: column; }
+    .input-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
 
     .panel-label {
       font-family: var(--mono);
@@ -95,8 +180,20 @@
       margin-bottom: 12px;
     }
 
-    .input-title { font-size: 28px; font-weight: 600; color: var(--text); margin-bottom: 8px; letter-spacing: -0.5px; }
-    .input-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+    .input-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .input-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
 
     textarea {
       width: 100%;
@@ -111,12 +208,15 @@
       padding: 20px;
       resize: none;
       min-height: 220px;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.3s, color 0.3s;
       outline: none;
     }
 
     textarea::placeholder { color: var(--text-dim); }
-    textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-light); }
+    textarea:focus { 
+      border-color: var(--accent); 
+      box-shadow: 0 0 0 4px var(--accent-light);
+    }
 
     .btn {
       display: inline-flex;
@@ -133,7 +233,13 @@
       transition: all 0.15s;
     }
 
-    .btn-primary { background: var(--accent); color: white; width: 100%; margin-top: 16px; }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      width: 100%;
+      margin-top: 16px;
+    }
+
     .btn-primary:hover { background: var(--accent-hover); }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -144,17 +250,25 @@
       font-size: 13px;
       padding: 10px 16px;
     }
-    .btn-ghost:hover { border-color: var(--border-strong); color: var(--text); background: var(--surface2); }
+
+    .btn-ghost:hover { 
+      border-color: var(--border-strong); 
+      color: var(--text); 
+      background: var(--surface2);
+    }
 
     .btn-danger {
       background: transparent;
       color: var(--red);
-      border: 1px solid #f0d0cc;
+      border: 1px solid var(--red-bg);
       font-size: 13px;
       padding: 8px 14px;
     }
+
+    body.dark .btn-danger { border-color: #5a3a3a; }
     .btn-danger:hover { background: var(--red-bg); }
 
+    /* ── Status indicator ── */
     .status-bar {
       font-family: var(--mono);
       font-size: 12px;
@@ -167,18 +281,37 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
 
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      flex-shrink: 0;
+    }
+
     .dot.active { background: var(--accent); animation: pulse 1.2s infinite; }
     .dot.error { background: var(--red); }
     .dot.success { background: var(--green); }
 
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
 
-    .filter-section { padding-top: 20px; border-top: 1px solid var(--border); }
+    /* ── Filter section ── */
+    .filter-section {
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
 
-    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
     .filter-btn {
       font-family: var(--mono);
@@ -191,10 +324,38 @@
       cursor: pointer;
       transition: all 0.15s;
     }
-    .filter-btn:hover { border-color: var(--border-strong); color: var(--text); }
-    .filter-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
 
-    .right-panel { padding: 32px 40px; display: flex; flex-direction: column; gap: 28px; overflow-y: auto; }
+    .filter-btn:hover { 
+      border-color: var(--border-strong); 
+      color: var(--text);
+    }
+
+    .filter-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    /* ── Right Panel ── */
+    .right-panel {
+      padding: 32px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      overflow-y: auto;
+    }
+
+    .right-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-title {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
 
     .task-count {
       font-family: var(--mono);
@@ -204,14 +365,21 @@
       border: 1px solid var(--border);
       padding: 5px 12px;
       border-radius: 20px;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
 
+    /* ── Preview Table ── */
     .preview-section {
       background: var(--surface);
       border: 2px solid var(--accent);
       border-radius: var(--radius);
       overflow: hidden;
       box-shadow: 0 4px 24px rgba(26, 95, 74, 0.08);
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    body.dark .preview-section {
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
     }
 
     .preview-header {
@@ -221,12 +389,31 @@
       align-items: center;
       justify-content: space-between;
       background: var(--accent-light);
+      transition: background 0.3s, border-color 0.3s;
     }
 
-    .preview-label { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--accent); text-transform: uppercase; font-weight: 500; }
-    .preview-actions { display: flex; gap: 10px; }
+    .preview-label {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: var(--accent);
+      text-transform: uppercase;
+      font-weight: 500;
+    }
 
-    .sheet-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .preview-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* ── Sheet view ── */
+    .sheet-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: background 0.3s, border-color 0.3s;
+    }
 
     .sheet-header {
       padding: 16px 20px;
@@ -234,14 +421,30 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: border-color 0.3s;
     }
 
-    .sheet-label { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase; }
+    .sheet-label {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
 
+    /* ── Tables ── */
     .table-scroll { overflow-x: auto; }
 
-    table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    thead tr { background: var(--surface2); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead tr {
+      background: var(--surface2);
+      transition: background 0.3s;
+    }
 
     th {
       font-family: var(--mono);
@@ -254,12 +457,26 @@
       font-weight: 500;
       border-bottom: 1px solid var(--border);
       white-space: nowrap;
+      transition: color 0.3s, border-color 0.3s;
     }
 
-    td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      color: var(--text);
+      transition: color 0.3s, border-color 0.3s;
+    }
+
     tr:last-child td { border-bottom: none; }
-    tr.new-row td:first-child { border-left: 3px solid var(--green); }
-    tr.update-row td:first-child { border-left: 3px solid var(--yellow); }
+
+    tr.new-row td:first-child {
+      border-left: 3px solid var(--green);
+    }
+
+    tr.update-row td:first-child {
+      border-left: 3px solid var(--yellow);
+    }
 
     td input[type="text"], td input[type="date"] {
       background: transparent;
@@ -271,12 +488,31 @@
       width: 100%;
       outline: none;
       padding: 4px 0;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s, color 0.3s;
     }
-    td input[type="text"]:hover, td input[type="date"]:hover { border-bottom: 1px solid var(--border); }
-    td input[type="text"]:focus, td input[type="date"]:focus { border-bottom: 1px solid var(--accent); }
-    td input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
-    td input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+
+    td input[type="text"]:hover,
+    td input[type="date"]:hover {
+      border-bottom: 1px solid var(--border);
+    }
+
+    td input[type="text"]:focus,
+    td input[type="date"]:focus {
+      border-bottom: 1px solid var(--accent);
+    }
+
+    td input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 0.5;
+      cursor: pointer;
+    }
+
+    td input[type="date"]::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+    }
+
+    body.dark td input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+    }
 
     td select {
       background: var(--surface2);
@@ -288,25 +524,90 @@
       padding: 5px 8px;
       outline: none;
       cursor: pointer;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
+
     td select:focus { border-color: var(--accent); }
 
-    .chip { display: inline-block; padding: 4px 10px; border-radius: 20px; font-family: var(--mono); font-size: 11px; font-weight: 500; }
-    .chip-open { background: var(--green-bg); color: var(--green); }
-    .chip-inprogress { background: var(--blue-bg); color: var(--blue); }
-    .chip-blocked { background: var(--yellow-bg); color: var(--yellow); }
-    .chip-complete { background: var(--purple-bg); color: var(--purple); }
-    .chip-cancelled { background: var(--red-bg); color: var(--red); }
+    /* ── Status chips ── */
+    .chip {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      transition: background 0.3s, color 0.3s;
+    }
 
-    .row-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; font-weight: 500; }
-    .tag-new { background: var(--green-bg); color: var(--green); }
-    .tag-update { background: var(--yellow-bg); color: var(--yellow); }
+    .chip-open { 
+      background: var(--green-bg); 
+      color: var(--green); 
+    }
+    .chip-inprogress { 
+      background: var(--blue-bg); 
+      color: var(--blue); 
+    }
+    .chip-blocked { 
+      background: var(--yellow-bg); 
+      color: var(--yellow); 
+    }
+    .chip-complete { 
+      background: var(--purple-bg); 
+      color: var(--purple); 
+    }
+    .chip-cancelled { 
+      background: var(--red-bg); 
+      color: var(--red); 
+    }
 
-    .delete-row-btn { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 18px; line-height: 1; padding: 4px 6px; border-radius: 4px; transition: all 0.15s; }
-    .delete-row-btn:hover { color: var(--red); background: var(--red-bg); }
+    /* ── Row tag ── */
+    .row-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: background 0.3s, color 0.3s;
+    }
 
-    .empty-state { padding: 60px; text-align: center; color: var(--text-dim); font-family: var(--mono); font-size: 13px; }
+    .tag-new { 
+      background: var(--green-bg); 
+      color: var(--green); 
+    }
+    .tag-update { 
+      background: var(--yellow-bg); 
+      color: var(--yellow); 
+    }
 
+    .delete-row-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+
+    .delete-row-btn:hover { 
+      color: var(--red); 
+      background: var(--red-bg);
+    }
+
+    .empty-state {
+      padding: 60px;
+      text-align: center;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+
+    /* ── Bulk action bar ── */
     .bulk-bar {
       display: none;
       align-items: center;
@@ -317,7 +618,9 @@
       font-family: var(--mono);
       font-size: 12px;
       color: var(--text-muted);
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
+
     .bulk-bar.visible { display: flex; }
 
     .bulk-bar select {
@@ -330,14 +633,35 @@
       padding: 6px 10px;
       outline: none;
       cursor: pointer;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
+
     .bulk-bar select:focus { border-color: var(--accent); }
 
-    .btn-apply { background: var(--accent); color: white; border: none; font-family: var(--serif); font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 6px; cursor: pointer; transition: background 0.15s; }
+    .btn-apply {
+      background: var(--accent);
+      color: white;
+      border: none;
+      font-family: var(--serif);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
     .btn-apply:hover { background: var(--accent-hover); }
 
-    input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
+    /* ── Checkbox styling ── */
+    input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
 
+    /* ── Toast ── */
     .toast {
       position: fixed;
       bottom: 28px;
@@ -356,7 +680,16 @@
       max-width: 360px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.08);
     }
-    .toast.show { transform: translateY(0); opacity: 1; }
+
+    body.dark .toast {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
     .toast.success { border-left: 4px solid var(--green); }
     .toast.error { border-left: 4px solid var(--red); }
   </style>
@@ -364,17 +697,39 @@
 <body>
 
 <header>
-  <div class="logo">Work<span>.</span>Tracker</div>
-  <div class="date-badge" id="dateBadge"></div>
+  <div class="header-left">
+    <div class="logo">Work<span>.</span>Tracker</div>
+  </div>
+  <div class="header-right">
+    <div class="date-badge" id="dateBadge"></div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" onclick="toggleTheme()">
+      <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+      <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+  </div>
 </header>
 
 <div class="layout">
 
+  <!-- LEFT: Input Panel -->
   <div class="left-panel">
     <div class="input-section">
       <div class="input-title">Capture your work</div>
       <div class="input-subtitle">Type notes, meeting actions, or tasks in plain language. The AI will parse and organize them for you.</div>
       <textarea id="noteInput" placeholder="e.g. Ping Jeffrey on priority score story. Waiting on Bhavana to send API doc by Thursday. NSS/CDS meeting — write summary."></textarea>
+
       <button class="btn btn-primary" id="interpretBtn" onclick="interpretNote()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
         Interpret Note
@@ -404,15 +759,17 @@
     </button>
   </div>
 
+  <!-- RIGHT: Main Panel -->
   <div class="right-panel">
 
+    <!-- Preview Section (hidden until interpret runs) -->
     <div class="preview-section" id="previewSection" style="display:none;">
       <div class="preview-header">
-        <div class="preview-label">⚡ Review Before Writing</div>
+        <div class="preview-label">Review Before Writing</div>
         <div class="preview-actions">
           <button class="btn btn-danger" onclick="clearPreview()">Discard</button>
           <button class="btn btn-primary" id="writeBtn" onclick="writeToSheet()" style="width:auto; padding: 10px 20px;">
-            Write to Sheet →
+            Write to Sheet
           </button>
         </div>
       </div>
@@ -437,6 +794,7 @@
       </div>
     </div>
 
+    <!-- Sheet View -->
     <div class="sheet-section">
       <div class="sheet-header">
         <div class="sheet-label">Current Tasks</div>
@@ -444,7 +802,7 @@
       </div>
       <div class="bulk-bar" id="bulkBar">
         <span id="bulkCount">0 selected</span>
-        <span style="color:var(--text-dim);">→ set status to</span>
+        <span style="color:var(--text-dim);">set status to</span>
         <select id="bulkStatus">
           <option value="Open">Open</option>
           <option value="In Progress">In Progress</option>
@@ -479,9 +837,24 @@
   </div>
 </div>
 
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
+  // ── Theme toggle ──
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  }
+
+  // Load saved theme preference on page load
+  (function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+    }
+  })();
+
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJeBz9rwvQZuwlOCURyMk5Hhs0iL7GVle2bpY2NboVutJ2y9rqTc39aWpyOXo2uj2ssQ/exec";
   const PROXY = "https://corsproxy.io/?url=";
 
@@ -489,12 +862,14 @@
   let allTasks = [];
   let pendingTasks = [];
 
+  // ── Date badge ──
   const now = new Date();
   const TODAY = now.toISOString().split("T")[0];
   document.getElementById("dateBadge").textContent = now.toLocaleDateString("en-US", {
     weekday: "short", month: "short", day: "numeric", year: "numeric"
   });
 
+  // ── Status bar ──
   function setStatus(msg, state = "idle") {
     document.getElementById("statusText").textContent = msg;
     const dot = document.getElementById("statusDot");
@@ -504,6 +879,7 @@
     if (state === "success") dot.classList.add("success");
   }
 
+  // ── Toast ──
   function showToast(msg, type = "success") {
     const t = document.getElementById("toast");
     t.textContent = msg;
@@ -511,6 +887,7 @@
     setTimeout(() => t.className = "toast", 3000);
   }
 
+  // ── Load sheet ──
   async function loadSheet() {
     setStatus("Loading tasks...", "loading");
     try {
@@ -529,6 +906,7 @@
     }
   }
 
+  // ── Render sheet ──
   function renderSheet() {
     const body = document.getElementById("sheetBody");
     const filtered = currentFilter === "all"
@@ -545,7 +923,7 @@
     body.innerHTML = filtered.map((t, i) => {
       const dueFormatted = t.Due ? new Date(t.Due + "T12:00:00").toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" }) : "—";
       const isOverdue = t.Due && t.Due < TODAY && t.Status !== "Complete" && t.Status !== "Cancelled";
-      const rowStyle = isOverdue ? "background:#fdf8f6;" : "";
+      const rowStyle = isOverdue ? "background:var(--red-bg);" : "";
       return `<tr style="${rowStyle}" data-index="${i}">
         <td><input type="checkbox" class="row-check" data-task="${esc(t.Task)}" onchange="onCheckChange()"></td>
         <td style="max-width:260px;">${t.Task || "—"}</td>
@@ -559,6 +937,7 @@
     }).join("");
   }
 
+  // ── Checkbox handling ──
   function onCheckChange() {
     const checked = document.querySelectorAll(".row-check:checked");
     const bulkBar = document.getElementById("bulkBar");
@@ -582,6 +961,7 @@
     onCheckChange();
   }
 
+  // ── Bulk status update ──
   async function applyBulkStatus() {
     const newStatus = document.getElementById("bulkStatus").value;
     const checked = document.querySelectorAll(".row-check:checked");
@@ -597,7 +977,7 @@
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      showToast(`${updates.length} task${updates.length !== 1 ? "s" : ""} marked as ${newStatus} ✓`);
+      showToast(`${updates.length} task${updates.length !== 1 ? "s" : ""} marked as ${newStatus}`);
       setStatus("Done — sheet updated", "success");
       clearSelection();
       await loadSheet();
@@ -607,11 +987,13 @@
     }
   }
 
+  // ── Status chip ──
   function statusChip(status) {
     const map = { "Open": "chip-open", "In Progress": "chip-inprogress", "Blocked": "chip-blocked", "Complete": "chip-complete", "Cancelled": "chip-cancelled" };
     return `<span class="chip ${map[status] || ''}">${status || "—"}</span>`;
   }
 
+  // ── Filter ──
   function setFilter(val, el) {
     currentFilter = val;
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
@@ -619,6 +1001,7 @@
     renderSheet();
   }
 
+  // ── Interpret note ──
   async function interpretNote() {
     const note = document.getElementById("noteInput").value.trim();
     if (!note) return showToast("Please enter a note first", "error");
@@ -644,6 +1027,7 @@
     }
   }
 
+  // ── Render preview ──
   function renderPreview(tasks) {
     const section = document.getElementById("previewSection");
     const body = document.getElementById("previewBody");
@@ -680,22 +1064,27 @@
     }).join("");
   }
 
+  // ── Escape HTML ──
   function esc(val) {
     return (val || "").toString().replace(/"/g, "&quot;").replace(/</g, "&lt;");
   }
 
+  // ── Update pending task ──
   function updatePending(i, field, value) { pendingTasks[i][field] = value; }
 
+  // ── Remove preview row ──
   function removePreviewRow(i) {
     pendingTasks.splice(i, 1);
     if (pendingTasks.length === 0) { clearPreview(); } else { renderPreview(pendingTasks); }
   }
 
+  // ── Clear preview ──
   function clearPreview() {
     document.getElementById("previewSection").style.display = "none";
     pendingTasks = [];
   }
 
+  // ── Write to sheet ──
   async function writeToSheet() {
     if (pendingTasks.length === 0) return;
     const btn = document.getElementById("writeBtn");
@@ -709,7 +1098,7 @@
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      showToast(`${pendingTasks.length} task${pendingTasks.length !== 1 ? "s" : ""} written to sheet ✓`);
+      showToast(`${pendingTasks.length} task${pendingTasks.length !== 1 ? "s" : ""} written to sheet`);
       clearPreview();
       document.getElementById("noteInput").value = "";
       setStatus("Done — sheet updated", "success");
@@ -722,6 +1111,7 @@
     }
   }
 
+  // ── Init ──
   loadSheet();
 </script>
 </body>
