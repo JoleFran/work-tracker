@@ -44,7 +44,6 @@
       line-height: 1.5;
     }
 
-    /* ── Header ── */
     header {
       border-bottom: 1px solid var(--border);
       padding: 20px 40px;
@@ -57,13 +56,7 @@
       z-index: 100;
     }
 
-    .logo {
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: -0.5px;
-      color: var(--text);
-    }
-
+    .logo { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); }
     .logo span { color: var(--accent); }
 
     .date-badge {
@@ -76,14 +69,12 @@
       border-radius: 20px;
     }
 
-    /* ── Layout ── */
     .layout {
       display: grid;
       grid-template-columns: 440px 1fr;
       min-height: calc(100vh - 65px);
     }
 
-    /* ── Left Panel ── */
     .left-panel {
       border-right: 1px solid var(--border);
       padding: 32px 28px;
@@ -93,11 +84,7 @@
       background: var(--surface);
     }
 
-    .input-section {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
+    .input-section { flex: 1; display: flex; flex-direction: column; }
 
     .panel-label {
       font-family: var(--mono);
@@ -108,20 +95,8 @@
       margin-bottom: 12px;
     }
 
-    .input-title {
-      font-size: 28px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 8px;
-      letter-spacing: -0.5px;
-    }
-
-    .input-subtitle {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-      line-height: 1.6;
-    }
+    .input-title { font-size: 28px; font-weight: 600; color: var(--text); margin-bottom: 8px; letter-spacing: -0.5px; }
+    .input-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
 
     textarea {
       width: 100%;
@@ -141,10 +116,7 @@
     }
 
     textarea::placeholder { color: var(--text-dim); }
-    textarea:focus { 
-      border-color: var(--accent); 
-      box-shadow: 0 0 0 4px var(--accent-light);
-    }
+    textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-light); }
 
     .btn {
       display: inline-flex;
@@ -161,13 +133,7 @@
       transition: all 0.15s;
     }
 
-    .btn-primary {
-      background: var(--accent);
-      color: white;
-      width: 100%;
-      margin-top: 16px;
-    }
-
+    .btn-primary { background: var(--accent); color: white; width: 100%; margin-top: 16px; }
     .btn-primary:hover { background: var(--accent-hover); }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -178,12 +144,7 @@
       font-size: 13px;
       padding: 10px 16px;
     }
-
-    .btn-ghost:hover { 
-      border-color: var(--border-strong); 
-      color: var(--text); 
-      background: var(--surface2);
-    }
+    .btn-ghost:hover { border-color: var(--border-strong); color: var(--text); background: var(--surface2); }
 
     .btn-danger {
       background: transparent;
@@ -192,10 +153,8 @@
       font-size: 13px;
       padding: 8px 14px;
     }
-
     .btn-danger:hover { background: var(--red-bg); }
 
-    /* ── Status indicator ── */
     .status-bar {
       font-family: var(--mono);
       font-size: 12px;
@@ -210,34 +169,16 @@
       gap: 10px;
     }
 
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--text-dim);
-      flex-shrink: 0;
-    }
-
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
     .dot.active { background: var(--accent); animation: pulse 1.2s infinite; }
     .dot.error { background: var(--red); }
     .dot.success { background: var(--green); }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-    /* ── Filter section ── */
-    .filter-section {
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-    }
+    .filter-section { padding-top: 20px; border-top: 1px solid var(--border); }
 
-    .filter-bar {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; }
 
     .filter-btn {
       font-family: var(--mono);
@@ -250,38 +191,10 @@
       cursor: pointer;
       transition: all 0.15s;
     }
+    .filter-btn:hover { border-color: var(--border-strong); color: var(--text); }
+    .filter-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
 
-    .filter-btn:hover { 
-      border-color: var(--border-strong); 
-      color: var(--text);
-    }
-
-    .filter-btn.active {
-      border-color: var(--accent);
-      background: var(--accent-light);
-      color: var(--accent);
-    }
-
-    /* ── Right Panel ── */
-    .right-panel {
-      padding: 32px 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-      overflow-y: auto;
-    }
-
-    .right-panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .panel-title {
-      font-size: 24px;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-    }
+    .right-panel { padding: 32px 40px; display: flex; flex-direction: column; gap: 28px; overflow-y: auto; }
 
     .task-count {
       font-family: var(--mono);
@@ -293,7 +206,6 @@
       border-radius: 20px;
     }
 
-    /* ── Preview Table ── */
     .preview-section {
       background: var(--surface);
       border: 2px solid var(--accent);
@@ -311,27 +223,10 @@
       background: var(--accent-light);
     }
 
-    .preview-label {
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing: 1px;
-      color: var(--accent);
-      text-transform: uppercase;
-      font-weight: 500;
-    }
+    .preview-label { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--accent); text-transform: uppercase; font-weight: 500; }
+    .preview-actions { display: flex; gap: 10px; }
 
-    .preview-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    /* ── Sheet view ── */
-    .sheet-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
+    .sheet-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
 
     .sheet-header {
       padding: 16px 20px;
@@ -341,26 +236,12 @@
       justify-content: space-between;
     }
 
-    .sheet-label {
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-    }
+    .sheet-label { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase; }
 
-    /* ── Tables ── */
     .table-scroll { overflow-x: auto; }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    thead tr {
-      background: var(--surface2);
-    }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead tr { background: var(--surface2); }
 
     th {
       font-family: var(--mono);
@@ -375,22 +256,10 @@
       white-space: nowrap;
     }
 
-    td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-      color: var(--text);
-    }
-
+    td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
     tr:last-child td { border-bottom: none; }
-
-    tr.new-row td:first-child {
-      border-left: 3px solid var(--green);
-    }
-
-    tr.update-row td:first-child {
-      border-left: 3px solid var(--yellow);
-    }
+    tr.new-row td:first-child { border-left: 3px solid var(--green); }
+    tr.update-row td:first-child { border-left: 3px solid var(--yellow); }
 
     td input[type="text"], td input[type="date"] {
       background: transparent;
@@ -404,25 +273,10 @@
       padding: 4px 0;
       transition: border-color 0.15s;
     }
-
-    td input[type="text"]:hover,
-    td input[type="date"]:hover {
-      border-bottom: 1px solid var(--border);
-    }
-
-    td input[type="text"]:focus,
-    td input[type="date"]:focus {
-      border-bottom: 1px solid var(--accent);
-    }
-
-    td input[type="date"]::-webkit-calendar-picker-indicator {
-      opacity: 0.5;
-      cursor: pointer;
-    }
-
-    td input[type="date"]::-webkit-calendar-picker-indicator:hover {
-      opacity: 1;
-    }
+    td input[type="text"]:hover, td input[type="date"]:hover { border-bottom: 1px solid var(--border); }
+    td input[type="text"]:focus, td input[type="date"]:focus { border-bottom: 1px solid var(--accent); }
+    td input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
+    td input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 
     td select {
       background: var(--surface2);
@@ -435,86 +289,24 @@
       outline: none;
       cursor: pointer;
     }
-
     td select:focus { border-color: var(--accent); }
 
-    /* ── Status chips ── */
-    .chip {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 500;
-    }
+    .chip { display: inline-block; padding: 4px 10px; border-radius: 20px; font-family: var(--mono); font-size: 11px; font-weight: 500; }
+    .chip-open { background: var(--green-bg); color: var(--green); }
+    .chip-inprogress { background: var(--blue-bg); color: var(--blue); }
+    .chip-blocked { background: var(--yellow-bg); color: var(--yellow); }
+    .chip-complete { background: var(--purple-bg); color: var(--purple); }
+    .chip-cancelled { background: var(--red-bg); color: var(--red); }
 
-    .chip-open { 
-      background: var(--green-bg); 
-      color: var(--green); 
-    }
-    .chip-inprogress { 
-      background: var(--blue-bg); 
-      color: var(--blue); 
-    }
-    .chip-blocked { 
-      background: var(--yellow-bg); 
-      color: var(--yellow); 
-    }
-    .chip-complete { 
-      background: var(--purple-bg); 
-      color: var(--purple); 
-    }
-    .chip-cancelled { 
-      background: var(--red-bg); 
-      color: var(--red); 
-    }
+    .row-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; font-weight: 500; }
+    .tag-new { background: var(--green-bg); color: var(--green); }
+    .tag-update { background: var(--yellow-bg); color: var(--yellow); }
 
-    /* ── Row tag ── */
-    .row-tag {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.5px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
+    .delete-row-btn { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 18px; line-height: 1; padding: 4px 6px; border-radius: 4px; transition: all 0.15s; }
+    .delete-row-btn:hover { color: var(--red); background: var(--red-bg); }
 
-    .tag-new { 
-      background: var(--green-bg); 
-      color: var(--green); 
-    }
-    .tag-update { 
-      background: var(--yellow-bg); 
-      color: var(--yellow); 
-    }
+    .empty-state { padding: 60px; text-align: center; color: var(--text-dim); font-family: var(--mono); font-size: 13px; }
 
-    .delete-row-btn {
-      background: none;
-      border: none;
-      color: var(--text-dim);
-      cursor: pointer;
-      font-size: 18px;
-      line-height: 1;
-      padding: 4px 6px;
-      border-radius: 4px;
-      transition: all 0.15s;
-    }
-
-    .delete-row-btn:hover { 
-      color: var(--red); 
-      background: var(--red-bg);
-    }
-
-    .empty-state {
-      padding: 60px;
-      text-align: center;
-      color: var(--text-dim);
-      font-family: var(--mono);
-      font-size: 13px;
-    }
-
-    /* ── Bulk action bar ── */
     .bulk-bar {
       display: none;
       align-items: center;
@@ -526,7 +318,6 @@
       font-size: 12px;
       color: var(--text-muted);
     }
-
     .bulk-bar.visible { display: flex; }
 
     .bulk-bar select {
@@ -540,33 +331,13 @@
       outline: none;
       cursor: pointer;
     }
-
     .bulk-bar select:focus { border-color: var(--accent); }
 
-    .btn-apply {
-      background: var(--accent);
-      color: white;
-      border: none;
-      font-family: var(--serif);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 7px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-
+    .btn-apply { background: var(--accent); color: white; border: none; font-family: var(--serif); font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 6px; cursor: pointer; transition: background 0.15s; }
     .btn-apply:hover { background: var(--accent-hover); }
 
-    /* ── Checkbox styling ── */
-    input[type="checkbox"] {
-      accent-color: var(--accent);
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-    }
+    input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
 
-    /* ── Toast ── */
     .toast {
       position: fixed;
       bottom: 28px;
@@ -585,12 +356,7 @@
       max-width: 360px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.08);
     }
-
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
+    .toast.show { transform: translateY(0); opacity: 1; }
     .toast.success { border-left: 4px solid var(--green); }
     .toast.error { border-left: 4px solid var(--red); }
   </style>
@@ -604,13 +370,11 @@
 
 <div class="layout">
 
-  <!-- LEFT: Input Panel -->
   <div class="left-panel">
     <div class="input-section">
       <div class="input-title">Capture your work</div>
       <div class="input-subtitle">Type notes, meeting actions, or tasks in plain language. The AI will parse and organize them for you.</div>
       <textarea id="noteInput" placeholder="e.g. Ping Jeffrey on priority score story. Waiting on Bhavana to send API doc by Thursday. NSS/CDS meeting — write summary."></textarea>
-
       <button class="btn btn-primary" id="interpretBtn" onclick="interpretNote()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
         Interpret Note
@@ -640,10 +404,8 @@
     </button>
   </div>
 
-  <!-- RIGHT: Main Panel -->
   <div class="right-panel">
 
-    <!-- Preview Section (hidden until interpret runs) -->
     <div class="preview-section" id="previewSection" style="display:none;">
       <div class="preview-header">
         <div class="preview-label">⚡ Review Before Writing</div>
@@ -675,7 +437,6 @@
       </div>
     </div>
 
-    <!-- Sheet View -->
     <div class="sheet-section">
       <div class="sheet-header">
         <div class="sheet-label">Current Tasks</div>
@@ -718,7 +479,6 @@
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
@@ -729,14 +489,12 @@
   let allTasks = [];
   let pendingTasks = [];
 
-  // ── Date badge ──
   const now = new Date();
   const TODAY = now.toISOString().split("T")[0];
   document.getElementById("dateBadge").textContent = now.toLocaleDateString("en-US", {
     weekday: "short", month: "short", day: "numeric", year: "numeric"
   });
 
-  // ── Status bar ──
   function setStatus(msg, state = "idle") {
     document.getElementById("statusText").textContent = msg;
     const dot = document.getElementById("statusDot");
@@ -746,7 +504,6 @@
     if (state === "success") dot.classList.add("success");
   }
 
-  // ── Toast ──
   function showToast(msg, type = "success") {
     const t = document.getElementById("toast");
     t.textContent = msg;
@@ -754,7 +511,6 @@
     setTimeout(() => t.className = "toast", 3000);
   }
 
-  // ── Load sheet ──
   async function loadSheet() {
     setStatus("Loading tasks...", "loading");
     try {
@@ -773,7 +529,6 @@
     }
   }
 
-  // ── Render sheet ──
   function renderSheet() {
     const body = document.getElementById("sheetBody");
     const filtered = currentFilter === "all"
@@ -804,14 +559,12 @@
     }).join("");
   }
 
-  // ── Checkbox logic ──
   function onCheckChange() {
     const checked = document.querySelectorAll(".row-check:checked");
     const bulkBar = document.getElementById("bulkBar");
     const bulkCount = document.getElementById("bulkCount");
     const selectAll = document.getElementById("selectAll");
     const total = document.querySelectorAll(".row-check").length;
-
     bulkCount.textContent = `${checked.length} selected`;
     bulkBar.classList.toggle("visible", checked.length > 0);
     selectAll.indeterminate = checked.length > 0 && checked.length < total;
@@ -833,16 +586,9 @@
     const newStatus = document.getElementById("bulkStatus").value;
     const checked = document.querySelectorAll(".row-check:checked");
     if (checked.length === 0) return;
-
     const taskNames = Array.from(checked).map(cb => cb.getAttribute("data-task"));
-    const updates = taskNames.map(name => ({
-      isUpdate: true,
-      Task: name,
-      Status: newStatus
-    }));
-
+    const updates = taskNames.map(name => ({ isUpdate: true, Task: name, Status: newStatus }));
     setStatus(`Updating ${updates.length} task${updates.length !== 1 ? "s" : ""}...`, "loading");
-
     try {
       const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
         method: "POST",
@@ -862,17 +608,10 @@
   }
 
   function statusChip(status) {
-    const map = {
-      "Open": "chip-open",
-      "In Progress": "chip-inprogress",
-      "Blocked": "chip-blocked",
-      "Complete": "chip-complete",
-      "Cancelled": "chip-cancelled"
-    };
+    const map = { "Open": "chip-open", "In Progress": "chip-inprogress", "Blocked": "chip-blocked", "Complete": "chip-complete", "Cancelled": "chip-cancelled" };
     return `<span class="chip ${map[status] || ''}">${status || "—"}</span>`;
   }
 
-  // ── Filter ──
   function setFilter(val, el) {
     currentFilter = val;
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
@@ -880,17 +619,14 @@
     renderSheet();
   }
 
-  // ── Interpret ──
   async function interpretNote() {
     const note = document.getElementById("noteInput").value.trim();
     if (!note) return showToast("Please enter a note first", "error");
-
     const btn = document.getElementById("interpretBtn");
     btn.disabled = true;
     setStatus("Interpreting note...", "loading");
-
     try {
-      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL), {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "interpret", note, today: TODAY })
@@ -908,18 +644,15 @@
     }
   }
 
-  // ── Render preview ──
   function renderPreview(tasks) {
     const section = document.getElementById("previewSection");
     const body = document.getElementById("previewBody");
     section.style.display = "block";
     section.scrollIntoView({ behavior: "smooth", block: "start" });
-
     body.innerHTML = tasks.map((t, i) => {
       const tag = t.isUpdate
         ? `<span class="row-tag tag-update">update</span>`
         : `<span class="row-tag tag-new">new</span>`;
-
       return `<tr class="${t.isUpdate ? 'update-row' : 'new-row'}" id="preview-row-${i}">
         <td>${tag}</td>
         <td><input type="text" value="${esc(t.Task)}" onchange="updatePending(${i}, 'Task', this.value)" style="min-width:200px;" /></td>
@@ -951,17 +684,11 @@
     return (val || "").toString().replace(/"/g, "&quot;").replace(/</g, "&lt;");
   }
 
-  function updatePending(i, field, value) {
-    pendingTasks[i][field] = value;
-  }
+  function updatePending(i, field, value) { pendingTasks[i][field] = value; }
 
   function removePreviewRow(i) {
     pendingTasks.splice(i, 1);
-    if (pendingTasks.length === 0) {
-      clearPreview();
-    } else {
-      renderPreview(pendingTasks);
-    }
+    if (pendingTasks.length === 0) { clearPreview(); } else { renderPreview(pendingTasks); }
   }
 
   function clearPreview() {
@@ -969,15 +696,13 @@
     pendingTasks = [];
   }
 
-  // ── Write to sheet ──
   async function writeToSheet() {
     if (pendingTasks.length === 0) return;
     const btn = document.getElementById("writeBtn");
     btn.disabled = true;
     setStatus("Writing to sheet...", "loading");
-
     try {
-      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL), {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "write", tasks: pendingTasks })
@@ -997,7 +722,6 @@
     }
   }
 
-  // ── Init ──
   loadSheet();
 </script>
 </body>
