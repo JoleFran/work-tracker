@@ -527,12 +527,12 @@
     <div>
       <div class="panel-label" style="margin-bottom:10px;">Quick Filters</div>
       <div class="filter-bar" id="filterBar">
-        <button class="filter-btn active" onclick="setFilter('all')">All</button>
-        <button class="filter-btn" onclick="setFilter('Open')">Open</button>
-        <button class="filter-btn" onclick="setFilter('In Progress')">In Progress</button>
-        <button class="filter-btn" onclick="setFilter('Blocked')">Blocked</button>
-        <button class="filter-btn" onclick="setFilter('Complete')">Complete</button>
-        <button class="filter-btn" onclick="setFilter('Cancelled')">Cancelled</button>
+        <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+        <button class="filter-btn" onclick="setFilter('Open', this)">Open</button>
+        <button class="filter-btn" onclick="setFilter('In Progress', this)">In Progress</button>
+        <button class="filter-btn" onclick="setFilter('Blocked', this)">Blocked</button>
+        <button class="filter-btn" onclick="setFilter('Complete', this)">Complete</button>
+        <button class="filter-btn" onclick="setFilter('Cancelled', this)">Cancelled</button>
       </div>
     </div>
 
@@ -659,7 +659,7 @@
   async function loadSheet() {
     setStatus("Loading tasks...", "loading");
     try {
-      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL), {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "read" })
@@ -774,10 +774,10 @@
   }
 
   // ── Filter ──
-  function setFilter(val) {
+  function setFilter(val, el) {
     currentFilter = val;
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-    event.target.classList.add("active");
+    el.classList.add("active");
     renderSheet();
   }
 
