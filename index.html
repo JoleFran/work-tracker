@@ -444,6 +444,58 @@
     }
 
     .delete-row-btn:hover { color: var(--red); }
+
+    /* ── Bulk action bar ── */
+    .bulk-bar {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .bulk-bar.visible { display: flex; }
+
+    .bulk-bar select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      border-radius: 4px;
+      padding: 4px 8px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .bulk-bar select:focus { border-color: var(--accent); }
+
+    .btn-apply {
+      background: var(--accent);
+      color: #0f0f0f;
+      border: none;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-apply:hover { background: var(--accent-dim); }
+
+    /* ── Checkbox styling ── */
+    input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -530,10 +582,24 @@
         <div class="sheet-label">Current Tasks</div>
         <div class="task-count" id="taskCount">— tasks</div>
       </div>
+      <div class="bulk-bar" id="bulkBar">
+        <span id="bulkCount">0 selected</span>
+        <span style="color:var(--text-dim);">→ set status to</span>
+        <select id="bulkStatus">
+          <option value="Open">Open</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Blocked">Blocked</option>
+          <option value="Complete">Complete</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+        <button class="btn-apply" onclick="applyBulkStatus()">Apply</button>
+        <button class="btn-danger" style="margin-left:auto;" onclick="clearSelection()">Clear</button>
+      </div>
       <div class="table-scroll">
         <table id="sheetTable">
           <thead>
             <tr>
+              <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" title="Select all"></th>
               <th>Task</th>
               <th>Owner</th>
               <th>Due</th>
@@ -544,7 +610,7 @@
             </tr>
           </thead>
           <tbody id="sheetBody">
-            <tr><td colspan="7" class="empty-state">Loading tasks...</td></tr>
+            <tr><td colspan="8" class="empty-state">Loading tasks...</td></tr>
           </tbody>
         </table>
       </div>
@@ -593,7 +659,7 @@
   async function loadSheet() {
     setStatus("Loading tasks...", "loading");
     try {
-      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "read" })
@@ -618,24 +684,82 @@
     document.getElementById("taskCount").textContent = `${filtered.length} task${filtered.length !== 1 ? "s" : ""}`;
 
     if (filtered.length === 0) {
-      body.innerHTML = `<tr><td colspan="7" class="empty-state">No tasks found.</td></tr>`;
+      body.innerHTML = `<tr><td colspan="8" class="empty-state">No tasks found.</td></tr>`;
       return;
     }
 
-    body.innerHTML = filtered.map(t => {
-      const due = t.Due ? new Date(t.Due + "T12:00:00").toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" }) : "—";
+    body.innerHTML = filtered.map((t, i) => {
+      const dueFormatted = t.Due ? new Date(t.Due + "T12:00:00").toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" }) : "—";
       const isOverdue = t.Due && t.Due < TODAY && t.Status !== "Complete" && t.Status !== "Cancelled";
       const rowStyle = isOverdue ? "background:#1f1010;" : "";
-      return `<tr style="${rowStyle}">
+      return `<tr style="${rowStyle}" data-index="${i}">
+        <td><input type="checkbox" class="row-check" data-task="${esc(t.Task)}" onchange="onCheckChange()"></td>
         <td style="max-width:260px;">${t.Task || "—"}</td>
         <td>${t.Owner || "—"}</td>
-        <td style="font-family:var(--mono);font-size:12px;color:${isOverdue ? 'var(--red)' : 'inherit'}">${due}</td>
+        <td style="font-family:var(--mono);font-size:12px;color:${isOverdue ? 'var(--red)' : 'inherit'}">${dueFormatted}</td>
         <td>${t.Project || "—"}</td>
         <td>${statusChip(t.Status)}</td>
         <td style="font-family:var(--mono);font-size:12px;">${t.Priority || "—"}</td>
         <td style="color:var(--text-muted);font-size:12px;">${t.Dependency || "—"}</td>
       </tr>`;
     }).join("");
+  }
+
+  // ── Checkbox logic ──
+  function onCheckChange() {
+    const checked = document.querySelectorAll(".row-check:checked");
+    const bulkBar = document.getElementById("bulkBar");
+    const bulkCount = document.getElementById("bulkCount");
+    const selectAll = document.getElementById("selectAll");
+    const total = document.querySelectorAll(".row-check").length;
+
+    bulkCount.textContent = `${checked.length} selected`;
+    bulkBar.classList.toggle("visible", checked.length > 0);
+    selectAll.indeterminate = checked.length > 0 && checked.length < total;
+    selectAll.checked = checked.length === total;
+  }
+
+  function toggleSelectAll(el) {
+    document.querySelectorAll(".row-check").forEach(cb => cb.checked = el.checked);
+    onCheckChange();
+  }
+
+  function clearSelection() {
+    document.querySelectorAll(".row-check").forEach(cb => cb.checked = false);
+    document.getElementById("selectAll").checked = false;
+    onCheckChange();
+  }
+
+  async function applyBulkStatus() {
+    const newStatus = document.getElementById("bulkStatus").value;
+    const checked = document.querySelectorAll(".row-check:checked");
+    if (checked.length === 0) return;
+
+    const taskNames = Array.from(checked).map(cb => cb.getAttribute("data-task"));
+    const updates = taskNames.map(name => ({
+      isUpdate: true,
+      Task: name,
+      Status: newStatus
+    }));
+
+    setStatus(`Updating ${updates.length} task${updates.length !== 1 ? "s" : ""}...`, "loading");
+
+    try {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "write", tasks: updates })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      showToast(`${updates.length} task${updates.length !== 1 ? "s" : ""} marked as ${newStatus} ✓`);
+      setStatus("Done — sheet updated", "success");
+      clearSelection();
+      await loadSheet();
+    } catch (err) {
+      setStatus("Update failed", "error");
+      showToast("Error: " + err.message, "error");
+    }
   }
 
   function statusChip(status) {
@@ -667,7 +791,7 @@
     setStatus("Interpreting note...", "loading");
 
     try {
-      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "interpret", note, today: TODAY })
@@ -754,7 +878,7 @@
     setStatus("Writing to sheet...", "loading");
 
     try {
-      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "write", tasks: pendingTasks })
