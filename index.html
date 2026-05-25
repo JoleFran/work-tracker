@@ -593,7 +593,7 @@
   async function loadSheet() {
     setStatus("Loading tasks...", "loading");
     try {
-      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL), {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "read" })
@@ -667,7 +667,7 @@
     setStatus("Interpreting note...", "loading");
 
     try {
-      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL), {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "interpret", note, today: TODAY })
@@ -754,7 +754,7 @@
     setStatus("Writing to sheet...", "loading");
 
     try {
-      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL), {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "write", tasks: pendingTasks })
