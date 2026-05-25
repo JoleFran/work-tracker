@@ -623,7 +623,7 @@
     }
 
     body.innerHTML = filtered.map(t => {
-      const due = t.Due ? t.Due : "—";
+      const due = t.Due ? new Date(t.Due + "T12:00:00").toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" }) : "—";
       const isOverdue = t.Due && t.Due < TODAY && t.Status !== "Complete" && t.Status !== "Cancelled";
       const rowStyle = isOverdue ? "background:#1f1010;" : "";
       return `<tr style="${rowStyle}">
