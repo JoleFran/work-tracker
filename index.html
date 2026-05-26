@@ -152,7 +152,7 @@
 
     textarea {
       width: 100%;
-      flex: 1;
+      flex: none;
       background: var(--surface2);
       border: 2px solid var(--border);
       border-radius: var(--radius);
@@ -161,8 +161,10 @@
       font-size: 15px;
       line-height: 1.8;
       padding: 20px;
-      resize: none;
-      min-height: 220px;
+      resize: vertical;
+      min-height: 200px;
+      max-height: 600px;
+      height: 200px;
       transition: border-color 0.2s, box-shadow 0.2s, background 0.3s, color 0.3s;
       outline: none;
     }
