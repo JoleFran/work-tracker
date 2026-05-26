@@ -905,7 +905,12 @@
       showToast("Could not connect to sheet", "error");
     }
   }
-
+function formatDateSafe(val) {
+  if (!val) return null;
+  const d = new Date(val);
+  if (isNaN(d)) return null;
+  return d.toISOString().split("T")[0];
+}
   // ── Render sheet ──
   function renderSheet() {
     const body = document.getElementById("sheetBody");
@@ -913,8 +918,9 @@
   ? allTasks.filter(t => {
       if (t.Status !== "Complete" && t.Status !== "Cancelled") return true;
       if (!t["Completed Date"]) return true;
-      const completedDay = new Date(t["Completed Date"] + "T12:00:00").toISOString().split("T")[0];
-      return completedDay >= TODAY;
+      const completedDay = formatDateSafe(t["Completed Date"]);
+if (!completedDay) return true;
+return completedDay >= TODAY;
     })
   : allTasks.filter(t => t.Status === currentFilter);
 
