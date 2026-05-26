@@ -110,7 +110,7 @@
     .logo span { color: var(--accent); }
 
     .date-badge {
-      font-family: var(--mono);
+      
       font-size: 12px;
       color: var(--text-muted);
       background: var(--surface);
@@ -160,7 +160,7 @@
     .input-section { flex: 1; display: flex; flex-direction: column; }
 
     .panel-label {
-      font-family: var(--mono);
+      
       font-size: 11px;
       letter-spacing: 1.5px;
       color: var(--text-muted);
@@ -327,6 +327,11 @@
       border-bottom: 1px solid var(--border);
       white-space: nowrap;
     }
+
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--text-muted); }
+    .sort-icon { font-size: 10px; opacity: 0.35; margin-left: 4px; }
+    .sort-icon.active { opacity: 1; color: var(--accent); }
 
     td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
     tr:last-child td { border-bottom: none; }
@@ -552,15 +557,15 @@
       </div>
       <div class="table-scroll">
         <table id="sheetTable">
-          <thead>
+<thead id="sheetThead">
             <tr>
               <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" title="Select all"></th>
               <th>Task</th>
-              <th>Owner</th>
-              <th>Due</th>
-              <th>Project</th>
+              <th class="sortable" onclick="setSortCol('Owner')">Owner <span class="sort-icon" id="sort-Owner">⇅</span></th>
+              <th class="sortable" onclick="setSortCol('Due')">Due <span class="sort-icon" id="sort-Due">⇅</span></th>
+              <th class="sortable" onclick="setSortCol('Project')">Project <span class="sort-icon" id="sort-Project">⇅</span></th>
               <th>Status</th>
-              <th>Priority</th>
+              <th class="sortable" onclick="setSortCol('Priority')">Priority <span class="sort-icon" id="sort-Priority">⇅</span></th>
               <th>Dependency</th>
             </tr>
           </thead>
@@ -590,7 +595,8 @@
     if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
   })();
 
-  let currentFilter = "all";
+let currentFilter = "all";
+  let currentSort = { col: null, dir: 1 };
   let allTasks = [];
   let pendingTasks = [];
 
@@ -634,11 +640,60 @@
     }
   }
 
+const PRIORITY_ORDER = { "High": 1, "Med": 2, "Low": 3, "": 4 };
+
+  function setSortCol(col) {
+    if (currentSort.col === col) {
+      currentSort.dir *= -1;
+    } else {
+      currentSort.col = col;
+      currentSort.dir = 1;
+    }
+    updateSortIcons();
+    renderSheet();
+  }
+
+  function updateSortIcons() {
+    ["Owner", "Due", "Project", "Priority"].forEach(col => {
+      const el = document.getElementById("sort-" + col);
+      if (!el) return;
+      if (currentSort.col !== col) {
+        el.textContent = "⇅";
+        el.classList.remove("active");
+      } else {
+        el.textContent = currentSort.dir === 1 ? "↑" : "↓";
+        el.classList.add("active");
+      }
+    });
+  }
+
+  function sortTasks(tasks) {
+    if (!currentSort.col) return tasks;
+    const col = currentSort.col;
+    const dir = currentSort.dir;
+    return [...tasks].sort((a, b) => {
+      if (col === "Due") {
+        const av = a.Due || "9999-99-99";
+        const bv = b.Due || "9999-99-99";
+        return av < bv ? -dir : av > bv ? dir : 0;
+      }
+      if (col === "Priority") {
+        const ao = PRIORITY_ORDER[a.Priority] || 4;
+        const bo = PRIORITY_ORDER[b.Priority] || 4;
+        return (ao - bo) * dir;
+      }
+      const av = (a[col] || "").toString().toLowerCase();
+      const bv = (b[col] || "").toString().toLowerCase();
+      return av < bv ? -dir : av > bv ? dir : 0;
+    });
+  }
+
   function renderSheet() {
     const body = document.getElementById("sheetBody");
-    const filtered = currentFilter === "all"
+    const base = currentFilter === "all"
       ? allTasks
       : allTasks.filter(t => t.Status === currentFilter);
+    const filtered = sortTasks(base);
 
     document.getElementById("taskCount").textContent = `${filtered.length} task${filtered.length !== 1 ? "s" : ""}`;
 
@@ -717,8 +772,10 @@
     return `<span class="chip ${map[status] || ''}">${status || "—"}</span>`;
   }
 
-  function setFilter(val, el) {
+function setFilter(val, el) {
     currentFilter = val;
+    currentSort = { col: null, dir: 1 };
+    updateSortIcons();
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
     el.classList.add("active");
     renderSheet();
