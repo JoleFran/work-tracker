@@ -910,8 +910,13 @@
   function renderSheet() {
     const body = document.getElementById("sheetBody");
     const filtered = currentFilter === "all"
-      ? allTasks
-      : allTasks.filter(t => t.Status === currentFilter);
+  ? allTasks.filter(t => {
+      if (t.Status !== "Complete" && t.Status !== "Cancelled") return true;
+      if (!t["Completed Date"]) return true;
+      const completedDay = new Date(t["Completed Date"] + "T12:00:00").toISOString().split("T")[0];
+      return completedDay >= TODAY;
+    })
+  : allTasks.filter(t => t.Status === currentFilter);
 
     document.getElementById("taskCount").textContent = `${filtered.length} task${filtered.length !== 1 ? "s" : ""}`;
 
