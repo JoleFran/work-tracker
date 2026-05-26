@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Work Tracker — Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #faf8f4;
+      --surface: #ffffff;
+      --surface2: #f5f3ef;
+      --border: #e5e2dc;
+      --border-strong: #d4d0c8;
+      --accent: #1a5f4a;
+      --accent-hover: #154d3c;
+      --accent-light: #e8f2ee;
+      --text: #2c2c2c;
+      --text-muted: #6b6b6b;
+      --text-dim: #9a9a9a;
+      --red: #c44536;
+      --red-bg: #fdf2f1;
+      --yellow: #b8860b;
+      --yellow-bg: #fdf8e8;
+      --blue: #2563eb;
+      --blue-bg: #eff6ff;
+      --green: #16a34a;
+      --green-bg: #f0fdf4;
+      --purple: #7c3aed;
+      --purple-bg: #f5f3ff;
+      --radius: 8px;
+      --mono: 'IBM Plex Mono', monospace;
+      --serif: 'Fraunces', serif;
+    }
+
+    body.dark {
+      --bg: #1a1a1a;
+      --surface: #242424;
+      --surface2: #2e2e2e;
+      --border: #3a3a3a;
+      --border-strong: #4a4a4a;
+      --accent: #3d9d7c;
+      --accent-hover: #4db38e;
+      --accent-light: #1e3a32;
+      --text: #e8e8e8;
+      --text-muted: #a0a0a0;
+      --text-dim: #6a6a6a;
+      --red: #e57373;
+      --red-bg: #3d2a2a;
+      --yellow: #daa520;
+      --yellow-bg: #3d3520;
+      --blue: #60a5fa;
+      --blue-bg: #1e3a5f;
+      --green: #4ade80;
+      --green-bg: #1e3d2e;
+      --purple: #a78bfa;
+      --purple-bg: #2e2a3d;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--serif);
+      min-height: 100vh;
+      padding: 0;
+      line-height: 1.5;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ── Demo Banner ── */
+    .demo-banner {
+      background: var(--yellow-bg);
+      border-bottom: 1px solid var(--yellow);
+      padding: 10px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--yellow);
+    }
+
+    .demo-banner a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .demo-banner a:hover { text-decoration: underline; }
+
+    /* ── Header ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 33px;
+      background: var(--bg);
+      z-index: 100;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .header-right { display: flex; align-items: center; gap: 16px; }
+
+    .logo { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); }
+    .logo span { color: var(--accent); }
+
+    .date-badge {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .theme-toggle:hover { background: var(--surface2); border-color: var(--border-strong); }
+    .theme-toggle svg { width: 18px; height: 18px; color: var(--text-muted); }
+    .sun-icon { display: none; }
+    .moon-icon { display: block; }
+    body.dark .sun-icon { display: block; }
+    body.dark .moon-icon { display: none; }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      min-height: calc(100vh - 98px);
+    }
+
+    /* ── Left Panel ── */
+    .left-panel {
+      border-right: 1px solid var(--border);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      background: var(--surface);
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .input-section { flex: 1; display: flex; flex-direction: column; }
+
+    .panel-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .input-title { font-size: 28px; font-weight: 600; color: var(--text); margin-bottom: 8px; letter-spacing: -0.5px; }
+    .input-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+
+    textarea {
+      width: 100%;
+      flex: 1;
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--serif);
+      font-size: 15px;
+      line-height: 1.8;
+      padding: 20px;
+      resize: none;
+      min-height: 220px;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.3s;
+      outline: none;
+    }
+
+    textarea::placeholder { color: var(--text-dim); }
+    textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-light); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 24px;
+      border-radius: var(--radius);
+      font-family: var(--serif);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+
+    .btn-primary { background: var(--accent); color: white; width: 100%; margin-top: 16px; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      padding: 10px 16px;
+    }
+    .btn-ghost:hover { border-color: var(--border-strong); color: var(--text); background: var(--surface2); }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--red);
+      border: 1px solid var(--red-bg);
+      font-size: 13px;
+      padding: 8px 14px;
+    }
+    .btn-danger:hover { background: var(--red-bg); }
+
+    .status-bar {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 12px 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
+    .dot.active { background: var(--accent); animation: pulse 1.2s infinite; }
+    .dot.error { background: var(--red); }
+    .dot.success { background: var(--green); }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .filter-section { padding-top: 20px; border-top: 1px solid var(--border); }
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .filter-btn {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { border-color: var(--border-strong); color: var(--text); }
+    .filter-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+
+    .right-panel { padding: 32px 40px; display: flex; flex-direction: column; gap: 28px; overflow-y: auto; }
+
+    .task-count {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+
+    .preview-section {
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(26, 95, 74, 0.08);
+    }
+
+    .preview-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--accent-light);
+    }
+
+    .preview-label { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--accent); text-transform: uppercase; font-weight: 500; }
+    .preview-actions { display: flex; gap: 10px; }
+
+    .sheet-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+
+    .sheet-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sheet-label { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase; }
+
+    .table-scroll { overflow-x: auto; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead tr { background: var(--surface2); }
+
+    th {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
+    tr:last-child td { border-bottom: none; }
+    tr.new-row td:first-child { border-left: 3px solid var(--green); }
+    tr.update-row td:first-child { border-left: 3px solid var(--yellow); }
+
+    td input[type="text"], td input[type="date"] {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid transparent;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      width: 100%;
+      outline: none;
+      padding: 4px 0;
+      transition: border-color 0.15s;
+    }
+    td input[type="text"]:hover, td input[type="date"]:hover { border-bottom: 1px solid var(--border); }
+    td input[type="text"]:focus, td input[type="date"]:focus { border-bottom: 1px solid var(--accent); }
+    td input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
+    body.dark td input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+
+    td select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      border-radius: 4px;
+      padding: 5px 8px;
+      outline: none;
+      cursor: pointer;
+    }
+    td select:focus { border-color: var(--accent); }
+
+    .chip { display: inline-block; padding: 4px 10px; border-radius: 20px; font-family: var(--mono); font-size: 11px; font-weight: 500; }
+    .chip-open { background: var(--green-bg); color: var(--green); }
+    .chip-inprogress { background: var(--blue-bg); color: var(--blue); }
+    .chip-blocked { background: var(--yellow-bg); color: var(--yellow); }
+    .chip-complete { background: var(--purple-bg); color: var(--purple); }
+    .chip-cancelled { background: var(--red-bg); color: var(--red); }
+
+    .row-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; font-weight: 500; }
+    .tag-new { background: var(--green-bg); color: var(--green); }
+    .tag-update { background: var(--yellow-bg); color: var(--yellow); }
+
+    .delete-row-btn { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 18px; line-height: 1; padding: 4px 6px; border-radius: 4px; transition: all 0.15s; }
+    .delete-row-btn:hover { color: var(--red); background: var(--red-bg); }
+
+    .empty-state { padding: 60px; text-align: center; color: var(--text-dim); font-family: var(--mono); font-size: 13px; }
+
+    .bulk-bar {
+      display: none;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 20px;
+      background: var(--accent-light);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .bulk-bar.visible { display: flex; }
+
+    .bulk-bar select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      border-radius: 4px;
+      padding: 6px 10px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .btn-apply { background: var(--accent); color: white; border: none; font-family: var(--serif); font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 6px; cursor: pointer; transition: background 0.15s; }
+    .btn-apply:hover { background: var(--accent-hover); }
+
+    input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
+
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text);
+      z-index: 999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-width: 360px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-left: 4px solid var(--green); }
+    .toast.error { border-left: 4px solid var(--red); }
+  </style>
+</head>
+<body>
+
+<!-- Demo Banner -->
+<div class="demo-banner">
+  ⚠ Demo mode — all tasks and names are fictional. &nbsp;|&nbsp; AI interpretation is live and functional. &nbsp;|&nbsp;
+  <a href="https://github.com/JoleFran/work-tracker" target="_blank">View source on GitHub ↗</a>
+</div>
+
+<header>
+  <div class="logo">Work<span>.</span>Tracker</div>
+  <div class="header-right">
+    <div class="date-badge" id="dateBadge"></div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">
+      <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+      <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+
+  <div class="left-panel">
+    <div class="input-section">
+      <div class="input-title">Capture your work</div>
+      <div class="input-subtitle">Type notes, meeting actions, or tasks in plain language. The AI will parse and organize them for you.</div>
+      <textarea id="noteInput" placeholder="Try it — e.g. Follow up with Sarah on the Atlas wireframes. Waiting on Marcus to share the Q2 report by Friday. Schedule Meridian launch review meeting."></textarea>
+      <button class="btn btn-primary" id="interpretBtn" onclick="interpretNote()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Interpret Note
+      </button>
+    </div>
+
+    <div class="status-bar" id="statusBar">
+      <div class="dot" id="statusDot"></div>
+      <span id="statusText">Ready</span>
+    </div>
+
+    <div class="filter-section">
+      <div class="panel-label">Quick Filters</div>
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+        <button class="filter-btn" onclick="setFilter('Open', this)">Open</button>
+        <button class="filter-btn" onclick="setFilter('In Progress', this)">In Progress</button>
+        <button class="filter-btn" onclick="setFilter('Blocked', this)">Blocked</button>
+        <button class="filter-btn" onclick="setFilter('Complete', this)">Complete</button>
+        <button class="filter-btn" onclick="setFilter('Cancelled', this)">Cancelled</button>
+      </div>
+    </div>
+
+    <button class="btn btn-ghost" onclick="loadSheet()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      Refresh Sheet
+    </button>
+  </div>
+
+  <div class="right-panel">
+
+    <div class="preview-section" id="previewSection" style="display:none;">
+      <div class="preview-header">
+        <div class="preview-label">⚡ Review Before Writing</div>
+        <div class="preview-actions">
+          <button class="btn btn-danger" onclick="clearPreview()">Discard</button>
+          <button class="btn btn-primary" id="writeBtn" onclick="writeToSheet()" style="width:auto; padding: 10px 20px;">
+            Write to Sheet →
+          </button>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Task</th>
+              <th>Owner</th>
+              <th>Due</th>
+              <th>Project</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Dependency</th>
+              <th>Source</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="previewBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sheet-section">
+      <div class="sheet-header">
+        <div class="sheet-label">Current Tasks</div>
+        <div class="task-count" id="taskCount">— tasks</div>
+      </div>
+      <div class="bulk-bar" id="bulkBar">
+        <span id="bulkCount">0 selected</span>
+        <span style="color:var(--text-dim);">→ set status to</span>
+        <select id="bulkStatus">
+          <option value="Open">Open</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Blocked">Blocked</option>
+          <option value="Complete">Complete</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+        <button class="btn-apply" onclick="applyBulkStatus()">Apply</button>
+        <button class="btn btn-danger" style="margin-left:auto;" onclick="clearSelection()">Clear</button>
+      </div>
+      <div class="table-scroll">
+        <table id="sheetTable">
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" title="Select all"></th>
+              <th>Task</th>
+              <th>Owner</th>
+              <th>Due</th>
+              <th>Project</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Dependency</th>
+            </tr>
+          </thead>
+          <tbody id="sheetBody">
+            <tr><td colspan="8" class="empty-state">Loading tasks...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── REPLACE THIS WITH YOUR DEMO APPS SCRIPT URL ──
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-L9jr5ZENxKWbzPp5uUb9Z8HLH0hKbSML8WLxhaN3ZejLr3MEDGa-XwWjiS2Ha5d6-Q/exec";
+  const PROXY = "https://corsproxy.io/?url=";
+
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  }
+
+  (function() {
+    if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+  })();
+
+  let currentFilter = "all";
+  let allTasks = [];
+  let pendingTasks = [];
+
+  const now = new Date();
+  const TODAY = now.toISOString().split("T")[0];
+  document.getElementById("dateBadge").textContent = now.toLocaleDateString("en-US", {
+    weekday: "short", month: "short", day: "numeric", year: "numeric"
+  });
+
+  function setStatus(msg, state = "idle") {
+    document.getElementById("statusText").textContent = msg;
+    const dot = document.getElementById("statusDot");
+    dot.className = "dot";
+    if (state === "loading") dot.classList.add("active");
+    if (state === "error") dot.classList.add("error");
+    if (state === "success") dot.classList.add("success");
+  }
+
+  function showToast(msg, type = "success") {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.className = "toast", 3000);
+  }
+
+  async function loadSheet() {
+    setStatus("Loading tasks...", "loading");
+    try {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "read" })
+      });
+      const data = await res.json();
+      allTasks = data.tasks || [];
+      renderSheet();
+      setStatus(`Loaded ${allTasks.length} tasks`, "success");
+    } catch (err) {
+      setStatus("Failed to load sheet", "error");
+      showToast("Could not connect to sheet", "error");
+    }
+  }
+
+  function renderSheet() {
+    const body = document.getElementById("sheetBody");
+    const filtered = currentFilter === "all"
+      ? allTasks
+      : allTasks.filter(t => t.Status === currentFilter);
+
+    document.getElementById("taskCount").textContent = `${filtered.length} task${filtered.length !== 1 ? "s" : ""}`;
+
+    if (filtered.length === 0) {
+      body.innerHTML = `<tr><td colspan="8" class="empty-state">No tasks found.</td></tr>`;
+      return;
+    }
+
+    body.innerHTML = filtered.map((t, i) => {
+      const dueFormatted = t.Due ? new Date(t.Due + "T12:00:00").toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" }) : "—";
+      const isOverdue = t.Due && t.Due < TODAY && t.Status !== "Complete" && t.Status !== "Cancelled";
+      const rowStyle = isOverdue ? "background:var(--red-bg);" : "";
+      return `<tr style="${rowStyle}" data-index="${i}">
+        <td><input type="checkbox" class="row-check" data-task="${esc(t.Task)}" onchange="onCheckChange()"></td>
+        <td style="max-width:260px;">${t.Task || "—"}</td>
+        <td>${t.Owner || "—"}</td>
+        <td style="font-family:var(--mono);font-size:12px;color:${isOverdue ? 'var(--red)' : 'inherit'}">${dueFormatted}</td>
+        <td>${t.Project || "—"}</td>
+        <td>${statusChip(t.Status)}</td>
+        <td style="font-family:var(--mono);font-size:12px;">${t.Priority || "—"}</td>
+        <td style="color:var(--text-muted);font-size:12px;">${t.Dependency || "—"}</td>
+      </tr>`;
+    }).join("");
+  }
+
+  function onCheckChange() {
+    const checked = document.querySelectorAll(".row-check:checked");
+    const bulkBar = document.getElementById("bulkBar");
+    const bulkCount = document.getElementById("bulkCount");
+    const selectAll = document.getElementById("selectAll");
+    const total = document.querySelectorAll(".row-check").length;
+    bulkCount.textContent = `${checked.length} selected`;
+    bulkBar.classList.toggle("visible", checked.length > 0);
+    selectAll.indeterminate = checked.length > 0 && checked.length < total;
+    selectAll.checked = checked.length === total;
+  }
+
+  function toggleSelectAll(el) {
+    document.querySelectorAll(".row-check").forEach(cb => cb.checked = el.checked);
+    onCheckChange();
+  }
+
+  function clearSelection() {
+    document.querySelectorAll(".row-check").forEach(cb => cb.checked = false);
+    document.getElementById("selectAll").checked = false;
+    onCheckChange();
+  }
+
+  async function applyBulkStatus() {
+    const newStatus = document.getElementById("bulkStatus").value;
+    const checked = document.querySelectorAll(".row-check:checked");
+    if (checked.length === 0) return;
+    const taskNames = Array.from(checked).map(cb => cb.getAttribute("data-task"));
+    const updates = taskNames.map(name => ({ isUpdate: true, Task: name, Status: newStatus }));
+    setStatus(`Updating ${updates.length} task${updates.length !== 1 ? "s" : ""}...`, "loading");
+    try {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "write", tasks: updates })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      showToast(`${updates.length} task${updates.length !== 1 ? "s" : ""} marked as ${newStatus} ✓`);
+      setStatus("Done — sheet updated", "success");
+      clearSelection();
+      await loadSheet();
+    } catch (err) {
+      setStatus("Update failed", "error");
+      showToast("Error: " + err.message, "error");
+    }
+  }
+
+  function statusChip(status) {
+    const map = { "Open": "chip-open", "In Progress": "chip-inprogress", "Blocked": "chip-blocked", "Complete": "chip-complete", "Cancelled": "chip-cancelled" };
+    return `<span class="chip ${map[status] || ''}">${status || "—"}</span>`;
+  }
+
+  function setFilter(val, el) {
+    currentFilter = val;
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    el.classList.add("active");
+    renderSheet();
+  }
+
+  async function interpretNote() {
+    const note = document.getElementById("noteInput").value.trim();
+    if (!note) return showToast("Please enter a note first", "error");
+    const btn = document.getElementById("interpretBtn");
+    btn.disabled = true;
+    setStatus("Interpreting note...", "loading");
+    try {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "interpret", note, today: TODAY })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      pendingTasks = data.tasks || [];
+      renderPreview(pendingTasks);
+      setStatus(`Found ${pendingTasks.length} task${pendingTasks.length !== 1 ? "s" : ""} — review below`, "success");
+    } catch (err) {
+      setStatus("Interpretation failed", "error");
+      showToast("Error: " + err.message, "error");
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function renderPreview(tasks) {
+    const section = document.getElementById("previewSection");
+    const body = document.getElementById("previewBody");
+    section.style.display = "block";
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    body.innerHTML = tasks.map((t, i) => {
+      const tag = t.isUpdate
+        ? `<span class="row-tag tag-update">update</span>`
+        : `<span class="row-tag tag-new">new</span>`;
+      return `<tr class="${t.isUpdate ? 'update-row' : 'new-row'}" id="preview-row-${i}">
+        <td>${tag}</td>
+        <td><input type="text" value="${esc(t.Task)}" onchange="updatePending(${i}, 'Task', this.value)" style="min-width:200px;" /></td>
+        <td><input type="text" value="${esc(t.Owner)}" onchange="updatePending(${i}, 'Owner', this.value)" style="min-width:100px;" /></td>
+        <td><input type="date" value="${esc(t.Due)}" onchange="updatePending(${i}, 'Due', this.value)" /></td>
+        <td><input type="text" value="${esc(t.Project)}" onchange="updatePending(${i}, 'Project', this.value)" style="min-width:80px;" /></td>
+        <td>
+          <select onchange="updatePending(${i}, 'Status', this.value)">
+            ${["Open","In Progress","Blocked","Complete","Cancelled"].map(s =>
+              `<option value="${s}" ${t.Status === s ? "selected" : ""}>${s}</option>`
+            ).join("")}
+          </select>
+        </td>
+        <td>
+          <select onchange="updatePending(${i}, 'Priority', this.value)">
+            ${["High","Med","Low"].map(p =>
+              `<option value="${p}" ${(t.Priority || "Med") === p ? "selected" : ""}>${p}</option>`
+            ).join("")}
+          </select>
+        </td>
+        <td><input type="text" value="${esc(t.Dependency)}" onchange="updatePending(${i}, 'Dependency', this.value)" style="min-width:140px;" /></td>
+        <td><input type="text" value="${esc(t.Source)}" onchange="updatePending(${i}, 'Source', this.value)" style="min-width:100px;" /></td>
+        <td><button class="delete-row-btn" onclick="removePreviewRow(${i})" title="Remove">×</button></td>
+      </tr>`;
+    }).join("");
+  }
+
+  function esc(val) {
+    return (val || "").toString().replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  }
+
+  function updatePending(i, field, value) { pendingTasks[i][field] = value; }
+
+  function removePreviewRow(i) {
+    pendingTasks.splice(i, 1);
+    if (pendingTasks.length === 0) { clearPreview(); } else { renderPreview(pendingTasks); }
+  }
+
+  function clearPreview() {
+    document.getElementById("previewSection").style.display = "none";
+    pendingTasks = [];
+  }
+
+  async function writeToSheet() {
+    if (pendingTasks.length === 0) return;
+    const btn = document.getElementById("writeBtn");
+    btn.disabled = true;
+    setStatus("Writing to sheet...", "loading");
+    try {
+      const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "write", tasks: pendingTasks })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      showToast(`${pendingTasks.length} task${pendingTasks.length !== 1 ? "s" : ""} written to sheet ✓`);
+      clearPreview();
+      document.getElementById("noteInput").value = "";
+      setStatus("Done — sheet updated", "success");
+      await loadSheet();
+    } catch (err) {
+      setStatus("Write failed", "error");
+      showToast("Error: " + err.message, "error");
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  loadSheet();
+</script>
+</body>
+</html>
