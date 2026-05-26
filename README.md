@@ -2,7 +2,7 @@
 
 A personal productivity tool that turns natural language notes into structured tasks — no forms, no manual data entry.
 
-**Live demo:** [jolefran.github.io/work-tracker](https://jolefran.github.io/work-tracker)
+**Live demo:** [jolefran.github.io/work-tracker/demo](https://jolefran.github.io/work-tracker/demo)
 
 ---
 
