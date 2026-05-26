@@ -86,7 +86,6 @@ The goal was a working tool, not a framework exercise. Keeping it dependency-fre
 ```
 work-tracker/
 ├── index.html      # Full frontend — UI, styles, and JS in one file
-├── build-log.md    # Design decisions, architecture notes, session log
 └── README.md       # This file
 ```
 
