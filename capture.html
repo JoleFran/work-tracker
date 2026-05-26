@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Work Tracker - Quick Capture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #faf8f4;
+      --surface: #ffffff;
+      --surface2: #f5f3ef;
+      --border: #e5e2dc;
+      --accent: #1a5f4a;
+      --accent-hover: #154d3c;
+      --accent-light: #e8f5f0;
+      --text: #2c2c2c;
+      --text-muted: #6b6b6b;
+      --text-dim: #9a9a9a;
+      --red: #c44536;
+      --mono: 'IBM Plex Mono', monospace;
+      --serif: 'Fraunces', serif;
+    }
+
+    body.dark {
+      --bg: #1a1a1a;
+      --surface: #242424;
+      --surface2: #2e2e2e;
+      --border: #3a3a3a;
+      --accent: #3d9d7c;
+      --accent-hover: #4db38e;
+      --accent-light: #1e3a32;
+      --text: #e8e8e8;
+      --text-muted: #a0a0a0;
+      --text-dim: #6a6a6a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--mono);
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      background-color: var(--surface);
+      border-bottom: 1px solid var(--border);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 12px; }
+
+    .logo { display: flex; align-items: center; gap: 8px; }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background-color: var(--accent);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .logo-icon svg { width: 16px; height: 16px; color: white; }
+
+    .logo-text {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      transition: color 0.3s ease;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background-color: var(--surface2);
+      border-radius: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--text-dim);
+      border-radius: 50%;
+      transition: background-color 0.3s ease;
+    }
+
+    .status-dot.active { background-color: var(--accent); animation: pulse 1.2s infinite; }
+    .status-dot.success { background-color: var(--accent); }
+    .status-dot.error { background-color: var(--red); }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .status-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      transition: color 0.3s ease;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      color: var(--text-muted);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .theme-toggle:hover { background-color: var(--surface2); color: var(--text); }
+    .theme-toggle svg { width: 20px; height: 20px; }
+    .theme-toggle .sun-icon { display: none; }
+    body.dark .theme-toggle .moon-icon { display: none; }
+    body.dark .theme-toggle .sun-icon { display: block; }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      padding-bottom: 120px;
+    }
+
+    .capture-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      transition: color 0.3s ease;
+    }
+
+    .note-input {
+      flex: 1;
+      width: 100%;
+      min-height: calc(100dvh - 280px);
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      resize: none;
+      outline: none;
+      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    }
+
+    .note-input::placeholder { color: var(--text-dim); }
+    .note-input:focus { border-color: var(--accent); }
+
+    .success-msg {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      margin-top: 16px;
+      background-color: var(--accent-light);
+      border-radius: 8px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .success-msg.visible { display: flex; }
+    .success-msg svg { width: 18px; height: 18px; }
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 20px;
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+      background-color: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 16px 24px;
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 500;
+      color: white;
+      background-color: var(--accent);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .save-btn:hover { background-color: var(--accent-hover); }
+    .save-btn:active { transform: scale(0.98); }
+    .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .inbox-link {
+      display: block;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .inbox-link:hover { color: var(--accent); }
+
+    @media (min-width: 480px) {
+      .main { max-width: 480px; margin: 0 auto; width: 100%; }
+      .footer {
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 480px;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"></polyline>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+        </div>
+        <span class="logo-text">Work Tracker</span>
+      </div>
+      <div class="status">
+        <div class="status-dot" id="statusDot"></div>
+        <span class="status-text" id="statusText">Ready</span>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+      <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+  </header>
+
+  <main class="main">
+    <label class="capture-label" for="noteInput">Quick Capture</label>
+    <textarea
+      class="note-input"
+      id="noteInput"
+      placeholder="What's on your mind? e.g. Ask Raghu about NSS rollout timeline"
+    ></textarea>
+    <div class="success-msg" id="successMsg">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      <span>Note saved — process it from your desktop.</span>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <button class="save-btn" id="saveBtn">Save Note</button>
+    <a href="https://jolefran.github.io/work-tracker/" class="inbox-link">Open full tracker →</a>
+  </footer>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJeBz9rwvQZuwlOCURyMk5Hhs0iL7GVle2bpY2NboVutJ2y9rqTc39aWpyOXo2uj2ssQ/exec";
+    const PROXY = "https://corsproxy.io/?url=";
+
+    // ── Dark mode ──
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.body.classList.add('dark');
+      }
+    })();
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // ── Status helpers ──
+    function setStatus(msg, state = "idle") {
+      document.getElementById("statusText").textContent = msg;
+      const dot = document.getElementById("statusDot");
+      dot.className = "status-dot";
+      if (state === "loading") dot.classList.add("active");
+      if (state === "success") dot.classList.add("success");
+      if (state === "error") dot.classList.add("error");
+    }
+
+    // ── Save note ──
+    document.getElementById("saveBtn").addEventListener("click", async () => {
+      const note = document.getElementById("noteInput").value.trim();
+      if (!note) return;
+
+      const btn = document.getElementById("saveBtn");
+      const successMsg = document.getElementById("successMsg");
+
+      btn.disabled = true;
+      btn.textContent = "Saving...";
+      setStatus("Saving note...", "loading");
+      successMsg.classList.remove("visible");
+
+      try {
+        const res = await fetch(PROXY + encodeURIComponent(SCRIPT_URL + "?t=" + Date.now()), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "writeInbox", note })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+
+        // Success state
+        setStatus("Saved", "success");
+        successMsg.classList.add("visible");
+        document.getElementById("noteInput").value = "";
+
+        // Reset after 3 seconds
+        setTimeout(() => {
+          setStatus("Ready");
+          successMsg.classList.remove("visible");
+        }, 3000);
+
+      } catch (err) {
+        setStatus("Failed to save", "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Save Note";
+      }
+    });
+  </script>
+</body>
+</html>
