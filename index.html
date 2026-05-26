@@ -33,6 +33,30 @@
       --serif: 'Fraunces', serif;
     }
 
+    body.dark {
+      --bg: #1a1a1a;
+      --surface: #242424;
+      --surface2: #2e2e2e;
+      --border: #3a3a3a;
+      --border-strong: #4a4a4a;
+      --accent: #3d9d7c;
+      --accent-hover: #4db38e;
+      --accent-light: #1e3a32;
+      --text: #e8e8e8;
+      --text-muted: #a0a0a0;
+      --text-dim: #6a6a6a;
+      --red: #e57373;
+      --red-bg: #3d2a2a;
+      --yellow: #daa520;
+      --yellow-bg: #3d3520;
+      --blue: #60a5fa;
+      --blue-bg: #1e3a5f;
+      --green: #4ade80;
+      --green-bg: #1e3d2e;
+      --purple: #a78bfa;
+      --purple-bg: #2e2a3d;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -42,8 +66,10 @@
       min-height: 100vh;
       padding: 0;
       line-height: 1.5;
+      transition: background 0.3s, color 0.3s;
     }
 
+    /* ── Header ── */
     header {
       border-bottom: 1px solid var(--border);
       padding: 20px 40px;
@@ -54,7 +80,11 @@
       top: 0;
       background: var(--bg);
       z-index: 100;
+      transition: background 0.3s, border-color 0.3s;
     }
+
+    .header-left { display: flex; align-items: center; gap: 20px; }
+    .header-right { display: flex; align-items: center; gap: 16px; }
 
     .logo { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); }
     .logo span { color: var(--accent); }
@@ -67,14 +97,38 @@
       border: 1px solid var(--border);
       padding: 6px 14px;
       border-radius: 20px;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
 
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .theme-toggle:hover { background: var(--surface2); border-color: var(--border-strong); }
+    .theme-toggle svg { width: 18px; height: 18px; color: var(--text-muted); transition: color 0.3s; }
+    .theme-toggle:hover svg { color: var(--text); }
+    .sun-icon { display: none; }
+    .moon-icon { display: block; }
+    body.dark .sun-icon { display: block; }
+    body.dark .moon-icon { display: none; }
+
+    /* ── Layout ── */
     .layout {
       display: grid;
       grid-template-columns: 440px 1fr;
       min-height: calc(100vh - 65px);
     }
 
+    /* ── Left Panel ── */
     .left-panel {
       border-right: 1px solid var(--border);
       padding: 32px 28px;
@@ -82,6 +136,7 @@
       flex-direction: column;
       gap: 28px;
       background: var(--surface);
+      transition: background 0.3s, border-color 0.3s;
     }
 
     .input-section { flex: 1; display: flex; flex-direction: column; }
@@ -111,7 +166,7 @@
       padding: 20px;
       resize: none;
       min-height: 220px;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.3s, color 0.3s;
       outline: none;
     }
 
@@ -149,12 +204,14 @@
     .btn-danger {
       background: transparent;
       color: var(--red);
-      border: 1px solid #f0d0cc;
+      border: 1px solid var(--red-bg);
       font-size: 13px;
       padding: 8px 14px;
     }
+    body.dark .btn-danger { border-color: #5a3a3a; }
     .btn-danger:hover { background: var(--red-bg); }
 
+    /* ── Status indicator ── */
     .status-bar {
       font-family: var(--mono);
       font-size: 12px;
@@ -167,6 +224,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
 
     .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
@@ -176,8 +234,8 @@
 
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
+    /* ── Filter section ── */
     .filter-section { padding-top: 20px; border-top: 1px solid var(--border); }
-
     .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; }
 
     .filter-btn {
@@ -194,6 +252,7 @@
     .filter-btn:hover { border-color: var(--border-strong); color: var(--text); }
     .filter-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
 
+    /* ── Right Panel ── */
     .right-panel { padding: 32px 40px; display: flex; flex-direction: column; gap: 28px; overflow-y: auto; }
 
     .task-count {
@@ -204,15 +263,19 @@
       border: 1px solid var(--border);
       padding: 5px 12px;
       border-radius: 20px;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
 
+    /* ── Preview Table ── */
     .preview-section {
       background: var(--surface);
       border: 2px solid var(--accent);
       border-radius: var(--radius);
       overflow: hidden;
       box-shadow: 0 4px 24px rgba(26, 95, 74, 0.08);
+      transition: background 0.3s, border-color 0.3s;
     }
+    body.dark .preview-section { box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3); }
 
     .preview-header {
       padding: 16px 20px;
@@ -221,12 +284,20 @@
       align-items: center;
       justify-content: space-between;
       background: var(--accent-light);
+      transition: background 0.3s, border-color 0.3s;
     }
 
     .preview-label { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--accent); text-transform: uppercase; font-weight: 500; }
     .preview-actions { display: flex; gap: 10px; }
 
-    .sheet-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    /* ── Sheet view ── */
+    .sheet-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: background 0.3s, border-color 0.3s;
+    }
 
     .sheet-header {
       padding: 16px 20px;
@@ -234,14 +305,16 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: border-color 0.3s;
     }
 
     .sheet-label { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase; }
 
+    /* ── Tables ── */
     .table-scroll { overflow-x: auto; }
 
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    thead tr { background: var(--surface2); }
+    thead tr { background: var(--surface2); transition: background 0.3s; }
 
     th {
       font-family: var(--mono);
@@ -254,9 +327,23 @@
       font-weight: 500;
       border-bottom: 1px solid var(--border);
       white-space: nowrap;
+      transition: color 0.3s, border-color 0.3s;
     }
 
-    td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
+    /* ── Sort headers ── */
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--text-muted); }
+    .sort-icon { font-size: 10px; opacity: 0.35; margin-left: 4px; }
+    .sort-icon.active { opacity: 1; color: var(--accent); }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      color: var(--text);
+      transition: color 0.3s, border-color 0.3s;
+    }
+
     tr:last-child td { border-bottom: none; }
     tr.new-row td:first-child { border-left: 3px solid var(--green); }
     tr.update-row td:first-child { border-left: 3px solid var(--yellow); }
@@ -271,12 +358,13 @@
       width: 100%;
       outline: none;
       padding: 4px 0;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s, color 0.3s;
     }
     td input[type="text"]:hover, td input[type="date"]:hover { border-bottom: 1px solid var(--border); }
     td input[type="text"]:focus, td input[type="date"]:focus { border-bottom: 1px solid var(--accent); }
     td input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
     td input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+    body.dark td input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
 
     td select {
       background: var(--surface2);
@@ -288,17 +376,18 @@
       padding: 5px 8px;
       outline: none;
       cursor: pointer;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
     td select:focus { border-color: var(--accent); }
 
-    .chip { display: inline-block; padding: 4px 10px; border-radius: 20px; font-family: var(--mono); font-size: 11px; font-weight: 500; }
+    .chip { display: inline-block; padding: 4px 10px; border-radius: 20px; font-family: var(--mono); font-size: 11px; font-weight: 500; transition: background 0.3s, color 0.3s; }
     .chip-open { background: var(--green-bg); color: var(--green); }
     .chip-inprogress { background: var(--blue-bg); color: var(--blue); }
     .chip-blocked { background: var(--yellow-bg); color: var(--yellow); }
     .chip-complete { background: var(--purple-bg); color: var(--purple); }
     .chip-cancelled { background: var(--red-bg); color: var(--red); }
 
-    .row-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; font-weight: 500; }
+    .row-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; font-weight: 500; transition: background 0.3s, color 0.3s; }
     .tag-new { background: var(--green-bg); color: var(--green); }
     .tag-update { background: var(--yellow-bg); color: var(--yellow); }
 
@@ -307,11 +396,7 @@
 
     .empty-state { padding: 60px; text-align: center; color: var(--text-dim); font-family: var(--mono); font-size: 13px; }
 
-    th.sortable { cursor: pointer; user-select: none; }
-    th.sortable:hover { color: var(--text-muted); }
-    .sort-icon { font-size: 10px; opacity: 0.4; margin-left: 4px; }
-    .sort-icon.active { opacity: 1; color: var(--accent); }
-
+    /* ── Bulk action bar ── */
     .bulk-bar {
       display: none;
       align-items: center;
@@ -322,6 +407,7 @@
       font-family: var(--mono);
       font-size: 12px;
       color: var(--text-muted);
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
     .bulk-bar.visible { display: flex; }
 
@@ -335,6 +421,7 @@
       padding: 6px 10px;
       outline: none;
       cursor: pointer;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
     .bulk-bar select:focus { border-color: var(--accent); }
 
@@ -343,6 +430,7 @@
 
     input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
 
+    /* ── Toast ── */
     .toast {
       position: fixed;
       bottom: 28px;
@@ -361,6 +449,7 @@
       max-width: 360px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.08);
     }
+    body.dark .toast { box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast.success { border-left: 4px solid var(--green); }
     .toast.error { border-left: 4px solid var(--red); }
@@ -369,12 +458,33 @@
 <body>
 
 <header>
-  <div class="logo">Work<span>.</span>Tracker</div>
-  <div class="date-badge" id="dateBadge"></div>
+  <div class="header-left">
+    <div class="logo">Work<span>.</span>Tracker</div>
+  </div>
+  <div class="header-right">
+    <div class="date-badge" id="dateBadge"></div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" onclick="toggleTheme()">
+      <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+      <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+  </div>
 </header>
 
 <div class="layout">
 
+  <!-- LEFT: Input Panel -->
   <div class="left-panel">
     <div class="input-section">
       <div class="input-title">Capture your work</div>
@@ -409,15 +519,17 @@
     </button>
   </div>
 
+  <!-- RIGHT: Main Panel -->
   <div class="right-panel">
 
+    <!-- Preview Section -->
     <div class="preview-section" id="previewSection" style="display:none;">
       <div class="preview-header">
-        <div class="preview-label">⚡ Review Before Writing</div>
+        <div class="preview-label">Review Before Writing</div>
         <div class="preview-actions">
           <button class="btn btn-danger" onclick="clearPreview()">Discard</button>
           <button class="btn btn-primary" id="writeBtn" onclick="writeToSheet()" style="width:auto; padding: 10px 20px;">
-            Write to Sheet →
+            Write to Sheet
           </button>
         </div>
       </div>
@@ -442,6 +554,7 @@
       </div>
     </div>
 
+    <!-- Sheet View -->
     <div class="sheet-section">
       <div class="sheet-header">
         <div class="sheet-label">Current Tasks</div>
@@ -449,7 +562,7 @@
       </div>
       <div class="bulk-bar" id="bulkBar">
         <span id="bulkCount">0 selected</span>
-        <span style="color:var(--text-dim);">→ set status to</span>
+        <span style="color:var(--text-dim);">set status to</span>
         <select id="bulkStatus">
           <option value="Open">Open</option>
           <option value="In Progress">In Progress</option>
@@ -466,11 +579,11 @@
             <tr>
               <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" title="Select all"></th>
               <th>Task</th>
-              <th class="sortable" onclick="setSortCol('Owner')">Owner <span class="sort-icon">⇅</span></th>
-              <th class="sortable" onclick="setSortCol('Due')">Due <span class="sort-icon">⇅</span></th>
-              <th class="sortable" onclick="setSortCol('Project')">Project <span class="sort-icon">⇅</span></th>
+              <th class="sortable" onclick="setSortCol('Owner')">Owner <span class="sort-icon" id="sort-Owner">⇅</span></th>
+              <th class="sortable" onclick="setSortCol('Due')">Due <span class="sort-icon" id="sort-Due">⇅</span></th>
+              <th class="sortable" onclick="setSortCol('Project')">Project <span class="sort-icon" id="sort-Project">⇅</span></th>
               <th>Status</th>
-              <th class="sortable" onclick="setSortCol('Priority')">Priority <span class="sort-icon">⇅</span></th>
+              <th class="sortable" onclick="setSortCol('Priority')">Priority <span class="sort-icon" id="sort-Priority">⇅</span></th>
               <th>Dependency</th>
             </tr>
           </thead>
@@ -487,20 +600,38 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  // ── Theme toggle ──
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  }
+
+  (function() {
+    if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+  })();
+
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJeBz9rwvQZuwlOCURyMk5Hhs0iL7GVle2bpY2NboVutJ2y9rqTc39aWpyOXo2uj2ssQ/exec";
   const PROXY = "https://corsproxy.io/?url=";
 
   let currentFilter = "all";
+  let currentSort = { col: null, dir: 1 };
   let allTasks = [];
   let pendingTasks = [];
-  let currentSort = { col: null, dir: 1 };
 
+  // ── Date ──
   const now = new Date();
-  const TODAY = now.toISOString().split("T")[0];
+  const TODAY = (() => {
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const dd = String(now.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  })();
+
   document.getElementById("dateBadge").textContent = now.toLocaleDateString("en-US", {
     weekday: "short", month: "short", day: "numeric", year: "numeric"
   });
 
+  // ── Status bar ──
   function setStatus(msg, state = "idle") {
     document.getElementById("statusText").textContent = msg;
     const dot = document.getElementById("statusDot");
@@ -510,6 +641,7 @@
     if (state === "success") dot.classList.add("success");
   }
 
+  // ── Toast ──
   function showToast(msg, type = "success") {
     const t = document.getElementById("toast");
     t.textContent = msg;
@@ -517,6 +649,7 @@
     setTimeout(() => t.className = "toast", 3000);
   }
 
+  // ── Load sheet ──
   async function loadSheet() {
     setStatus("Loading tasks...", "loading");
     try {
@@ -535,27 +668,21 @@
     }
   }
 
-  function sortTasks(tasks) {
-    if (!currentSort.col) return tasks;
-    const col = currentSort.col;
-    const dir = currentSort.dir;
-    const priorityOrder = { "High": 1, "Med": 2, "Low": 3, "": 4 };
-    return [...tasks].sort((a, b) => {
-      let av = (a[col] || "").toString().toLowerCase();
-      let bv = (b[col] || "").toString().toLowerCase();
-      if (col === "Due") {
-        av = a.Due || "9999-99-99";
-        bv = b.Due || "9999-99-99";
-        return av < bv ? -dir : av > bv ? dir : 0;
-      }
-      if (col === "Priority") {
-        const ao = priorityOrder[a.Priority] || 4;
-        const bo = priorityOrder[b.Priority] || 4;
-        return (ao - bo) * dir;
-      }
-      return av < bv ? -dir : av > bv ? dir : 0;
-    });
+  // ── Date helper ──
+  function formatDateSafe(val) {
+    if (!val) return null;
+    const str = val.toString().trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+    const d = new Date(str);
+    if (isNaN(d)) return null;
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
   }
+
+  // ── Sort ──
+  const PRIORITY_ORDER = { "High": 1, "Med": 2, "Low": 3, "": 4 };
 
   function setSortCol(col) {
     if (currentSort.col === col) {
@@ -564,31 +691,48 @@
       currentSort.col = col;
       currentSort.dir = 1;
     }
+    updateSortIcons();
     renderSheet();
   }
 
-  function sortIndicator(col) {
-    if (currentSort.col !== col) return '<span class="sort-icon">⇅</span>';
-    return currentSort.dir === 1
-      ? '<span class="sort-icon active">↑</span>'
-      : '<span class="sort-icon active">↓</span>';
+  function updateSortIcons() {
+    ["Owner", "Due", "Project", "Priority"].forEach(col => {
+      const el = document.getElementById("sort-" + col);
+      if (!el) return;
+      if (currentSort.col !== col) {
+        el.textContent = "⇅";
+        el.classList.remove("active");
+      } else {
+        el.textContent = currentSort.dir === 1 ? "↑" : "↓";
+        el.classList.add("active");
+      }
+    });
   }
 
+  function sortTasks(tasks) {
+    if (!currentSort.col) return tasks;
+    const col = currentSort.col;
+    const dir = currentSort.dir;
+    return [...tasks].sort((a, b) => {
+      if (col === "Due") {
+        const av = a.Due || "9999-99-99";
+        const bv = b.Due || "9999-99-99";
+        return av < bv ? -dir : av > bv ? dir : 0;
+      }
+      if (col === "Priority") {
+        const ao = PRIORITY_ORDER[a.Priority] || 4;
+        const bo = PRIORITY_ORDER[b.Priority] || 4;
+        return (ao - bo) * dir;
+      }
+      const av = (a[col] || "").toString().toLowerCase();
+      const bv = (b[col] || "").toString().toLowerCase();
+      return av < bv ? -dir : av > bv ? dir : 0;
+    });
+  }
+
+  // ── Render sheet ──
   function renderSheet() {
     const body = document.getElementById("sheetBody");
-    const thead = document.getElementById("sheetThead");
-
-    // Re-render sortable headers
-    thead.innerHTML = `<tr>
-      <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" title="Select all"></th>
-      <th>Task</th>
-      <th class="sortable" onclick="setSortCol('Owner')">Owner ${sortIndicator('Owner')}</th>
-      <th class="sortable" onclick="setSortCol('Due')">Due ${sortIndicator('Due')}</th>
-      <th class="sortable" onclick="setSortCol('Project')">Project ${sortIndicator('Project')}</th>
-      <th>Status</th>
-      <th class="sortable" onclick="setSortCol('Priority')">Priority ${sortIndicator('Priority')}</th>
-      <th>Dependency</th>
-    </tr>`;
 
     const base = currentFilter === "all"
       ? allTasks.filter(t => {
@@ -612,7 +756,7 @@
     body.innerHTML = filtered.map((t, i) => {
       const dueFormatted = t.Due ? new Date(t.Due + "T12:00:00").toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" }) : "—";
       const isOverdue = t.Due && t.Due < TODAY && t.Status !== "Complete" && t.Status !== "Cancelled";
-      const rowStyle = isOverdue ? "background:#fdf8f6;" : "";
+      const rowStyle = isOverdue ? "background:var(--red-bg);" : "";
       return `<tr style="${rowStyle}" data-index="${i}">
         <td><input type="checkbox" class="row-check" data-task="${esc(t.Task)}" onchange="onCheckChange()"></td>
         <td style="max-width:260px;">${t.Task || "—"}</td>
@@ -626,6 +770,7 @@
     }).join("");
   }
 
+  // ── Checkbox handling ──
   function onCheckChange() {
     const checked = document.querySelectorAll(".row-check:checked");
     const bulkBar = document.getElementById("bulkBar");
@@ -649,6 +794,7 @@
     onCheckChange();
   }
 
+  // ── Bulk status update ──
   async function applyBulkStatus() {
     const newStatus = document.getElementById("bulkStatus").value;
     const checked = document.querySelectorAll(".row-check:checked");
@@ -664,7 +810,7 @@
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      showToast(`${updates.length} task${updates.length !== 1 ? "s" : ""} marked as ${newStatus} ✓`);
+      showToast(`${updates.length} task${updates.length !== 1 ? "s" : ""} marked as ${newStatus}`);
       setStatus("Done — sheet updated", "success");
       clearSelection();
       await loadSheet();
@@ -674,19 +820,23 @@
     }
   }
 
+  // ── Status chip ──
   function statusChip(status) {
     const map = { "Open": "chip-open", "In Progress": "chip-inprogress", "Blocked": "chip-blocked", "Complete": "chip-complete", "Cancelled": "chip-cancelled" };
     return `<span class="chip ${map[status] || ''}">${status || "—"}</span>`;
   }
 
+  // ── Filter ──
   function setFilter(val, el) {
     currentFilter = val;
     currentSort = { col: null, dir: 1 };
+    updateSortIcons();
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
     el.classList.add("active");
     renderSheet();
   }
 
+  // ── Interpret note ──
   async function interpretNote() {
     const note = document.getElementById("noteInput").value.trim();
     if (!note) return showToast("Please enter a note first", "error");
@@ -712,6 +862,7 @@
     }
   }
 
+  // ── Render preview ──
   function renderPreview(tasks) {
     const section = document.getElementById("previewSection");
     const body = document.getElementById("previewBody");
@@ -764,6 +915,7 @@
     pendingTasks = [];
   }
 
+  // ── Write to sheet ──
   async function writeToSheet() {
     if (pendingTasks.length === 0) return;
     const btn = document.getElementById("writeBtn");
@@ -777,7 +929,7 @@
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      showToast(`${pendingTasks.length} task${pendingTasks.length !== 1 ? "s" : ""} written to sheet ✓`);
+      showToast(`${pendingTasks.length} task${pendingTasks.length !== 1 ? "s" : ""} written to sheet`);
       clearPreview();
       document.getElementById("noteInput").value = "";
       setStatus("Done — sheet updated", "success");
